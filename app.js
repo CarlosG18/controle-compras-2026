@@ -139,7 +139,7 @@
     try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (e) { return {}; }
   }
   function savePrefs() {
-    try { localStorage.setItem(PREFS_KEY, JSON.stringify({ view: state.view, topMonth: state.topMonth, filter: state.filter })); } catch (e) { /* ignora */ }
+    try { localStorage.setItem(PREFS_KEY, JSON.stringify({ view: state.view, month: state.month, topMonth: state.topMonth, filter: state.filter, sort: state.sort, group: state.group })); } catch (e) { /* ignora */ }
   }
 
   async function askServer() {
@@ -260,534 +260,986 @@
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const pct = v => (isNum(v) ? (v * 100).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%" : "—");
 
+  /* ---------------- Ícones (SVG inline, sem dependências) ---------------- */
+  const ICONS = {
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    minus: '<path d="M5 12h14"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    chevL: '<path d="m15 18-6-6 6-6"/>',
+    chevR: '<path d="m9 18 6-6-6-6"/>',
+    chevD: '<path d="m6 9 6 6 6-6"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    x: '<path d="M18 6 6 18M6 6l12 12"/>',
+    trash: '<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>',
+    pencil: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+    db: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+    up: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+    down: '<path d="M12 5v14M19 12l-7 7-7-7"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    cart: '<path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 7H6"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/>',
+    trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>',
+    alert: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>',
+    list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+    download: '<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
+    upload: '<path d="M12 21V9M7 14l5-5 5 5M5 3h14"/>',
+    file: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>',
+    refresh: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+    server: '<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/>',
+    browser: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/>'
+  };
+  const icon = (n, cls) => `<svg class="i${cls ? " " + cls : ""}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n] || ""}</svg>`;
+
+  /* ---------------- Utilidades de interface ---------------- */
+  const MES_ABREV = m => m.slice(0, 3);
+  const fold = s => norm(s).normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isNarrow = () => window.matchMedia("(max-width: 720px)").matches;
+  const pctFmt = v => (v * 100).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%";
+
+  // comparação com o mês anterior: diff > 0 = ficou mais caro (economia negativa)
+  function compareInfo(mIdx, r) {
+    const prev = prevPrice(mIdx, r.item);
+    if (!isNum(prev) || !isNum(r.unit)) return { prev: prev, has: false };
+    const diff = round2(r.unit - prev);
+    const pct = prev > 0 ? diff / prev : null;
+    return { prev: prev, has: true, diff: diff, pct: pct, dir: diff > 0 ? "up" : diff < 0 ? "down" : "eq" };
+  }
+  function deltaChip(c, prevMonth) {
+    if (!c.has) return "";
+    if (c.dir === "eq") return `<span class="delta eq" title="Mesmo preço de ${prevMonth}">= ${MES_ABREV(prevMonth)}</span>`;
+    const txt = isNum(c.pct) ? pctFmt(Math.abs(c.pct)) : BRL.format(Math.abs(c.diff));
+    const word = c.dir === "up" ? "mais caro" : "mais barato";
+    return `<span class="delta ${c.dir}" title="${word} que em ${prevMonth}: ${money(c.prev)} → atual">${icon(c.dir)}<span class="sr-only">${word}</span>${txt}</span>`;
+  }
+  function priceSummary(m) {
+    const mIdx = MESES.indexOf(m);
+    let n = 0, up = 0, down = 0, sum = 0;
+    state.months[m].forEach(r => {
+      const c = compareInfo(mIdx, r);
+      if (!c.has || !isNum(c.pct)) return;
+      n++; sum += c.pct;
+      if (c.dir === "up") up++; else if (c.dir === "down") down++;
+    });
+    return { n: n, up: up, down: down, avg: n ? sum / n : null };
+  }
+
   /* ---------------- Elementos ---------------- */
-  const $tabs = document.getElementById("tabs");
   const $view = document.getElementById("view");
   const $status = document.getElementById("dbStatus");
-  const $panel = document.getElementById("dataPanel");
-  const $toggle = document.getElementById("dataToggle");
+  const $addTop = document.getElementById("addTop");
+  const $bar = document.getElementById("bottombar");
+  const $layer = document.getElementById("sheetLayer");
+  const $sheet = document.getElementById("sheet");
+  const $toasts = document.getElementById("toasts");
+  const $tabs = document.querySelectorAll("[data-goto]");
 
-  /* ---------------- Abas ---------------- */
-  function renderTabs() {
-    const items = [{ key: "dash", label: "Dashboard" }].concat(MESES.map(m => ({ key: m, label: m })));
-    $tabs.innerHTML = items.map(t => {
-      const cur = state.view === t.key ? ' aria-current="page"' : "";
-      let dot = "";
-      if (t.key !== "dash" && summary(t.key).bought > 0) dot = '<span class="dot" title="Tem itens comprados"></span>';
-      return `<button type="button" class="tab${t.key === "dash" ? " dash" : ""}" data-view="${esc(t.key)}"${cur}>${esc(t.label)}${dot}</button>`;
-    }).join("");
-    const active = $tabs.querySelector('[aria-current="page"]');
-    if (active && $tabs.scrollWidth > $tabs.clientWidth) {
-      $tabs.scrollLeft = active.offsetLeft - $tabs.clientWidth / 2 + active.offsetWidth / 2;
-    }
-  }
-  $tabs.addEventListener("click", e => {
-    const b = e.target.closest("[data-view]");
-    if (!b) return;
-    go(b.dataset.view);
-  });
-
-  function go(view) {
-    state.view = view;
-    save();
-    render();
-    window.scrollTo(0, 0);
+  /* ---------------- Toasts ---------------- */
+  function toast(msg, opts) {
+    opts = opts || {};
+    const el = document.createElement("div");
+    el.className = "toast" + (opts.error ? " err" : "");
+    el.innerHTML = `<span class="msg"></span>${opts.action ? `<button type="button">${esc(opts.action)}</button>` : ""}`;
+    el.querySelector(".msg").textContent = msg;
+    const close = () => { el.classList.add("out"); setTimeout(() => el.remove(), 220); };
+    if (opts.action) el.querySelector("button").addEventListener("click", () => { close(); opts.onAction(); });
+    $toasts.appendChild(el);
+    while ($toasts.children.length > 3) $toasts.firstChild.remove();
+    setTimeout(close, opts.duration || (opts.action ? 6000 : 2600));
   }
 
-  function render() {
-    renderTabs();
-    document.body.classList.toggle("has-mbar", state.view !== "dash");
-    if (state.view === "dash") renderDash();
-    else renderMonth(state.view);
-  }
-
-  /* ---------------- Dashboard ---------------- */
-  function renderDash() {
-    const sums = MESES.map(m => ({ m: m, s: summary(m) }));
-    const annual = { spent: 0, bought: 0, pending: 0, cats: [0, 0, 0, 0] };
-    sums.forEach(x => {
-      annual.spent += x.s.spent; annual.bought += x.s.bought; annual.pending += x.s.pending;
-      x.s.cats.forEach((v, i) => { annual.cats[i] += v; });
-    });
-    const active = sums.filter(x => x.s.spent > 0);
-    const maxM = active.reduce((a, x) => (!a || x.s.spent > a.s.spent ? x : a), null);
-    const minM = active.reduce((a, x) => (!a || x.s.spent < a.s.spent ? x : a), null);
-    const avg = active.length ? annual.spent / active.length : 0;
-    const maxSpent = maxM ? maxM.s.spent : 0;
-
-    const kpis = `
-      <div class="kpis full">
-        <div class="kpi main"><p class="eyebrow">Total anual</p><div class="val">${money(annual.spent)}</div><div class="sub">${annual.bought} itens comprados</div></div>
-        <div class="kpi"><p class="eyebrow">Maior mês</p><div class="val">${money(maxM ? maxM.s.spent : 0)}</div><div class="sub">${maxM ? maxM.m : "sem compras"}</div></div>
-        <div class="kpi"><p class="eyebrow">Menor mês</p><div class="val">${money(minM ? minM.s.spent : 0)}</div><div class="sub">${minM ? minM.m : "sem compras"}</div></div>
-        <div class="kpi"><p class="eyebrow">Média mensal</p><div class="val">${money(avg)}</div><div class="sub">${active.length} ${active.length === 1 ? "mês" : "meses"} com gasto</div></div>
-      </div>`;
-
-    const bars = sums.map(x => {
-      const w = maxSpent ? (x.s.spent / maxSpent) * 100 : 0;
-      const segs = x.s.cats.map((v, i) => (v > 0 && x.s.spent > 0 ? `<i class="${CATKEY[i]}" style="width:${(v / x.s.spent) * w}%"></i>` : "")).join("");
-      return `<button type="button" class="bar-row${x.s.spent > 0 ? "" : " zero"}" data-view="${x.m}" aria-label="${x.m}: ${money(x.s.spent)}">
-        <span class="m">${x.m.slice(0, 3)}</span>
-        <span class="bar-track">${segs}</span>
-        <span class="v mono">${money(x.s.spent)}</span></button>`;
-    }).join("");
-    const legend = `<div class="legend">${CATS.map((c, i) => `<span><span class="sw ${CATKEY[i]}"></span>${c}</span>`).join("")}</div>`;
-
-    // Top 5
-    const tm = state.topMonth && MESES.includes(state.topMonth) ? state.topMonth : "Setembro";
-    const top = state.months[tm]
-      .map(r => ({ r: r, t: rowTotal(r) }))
-      .filter(x => isNum(x.t) && norm(x.r.item))
-      .sort((a, b) => b.t - a.t)
-      .slice(0, 5);
-    const medals = ["1º", "2º", "3º", "4º", "5º"];
-    const topRows = top.length ? top.map((x, i) => {
-      const ci = catIdx(x.r.cat);
-      const chip = ci >= 0 ? `<span class="chip ${CATKEY[ci]}">${CATS[ci]}</span>` : "";
-      return `<tr><td class="rank">${medals[i]}</td>
-        <td class="c-item">${esc(x.r.item)}<small class="mob-only">${chip}</small></td>
-        <td class="n mono">${money(x.t)}</td><td class="c-cat">${chip}</td></tr>`;
-    }).join("") : `<tr><td colspan="4" class="empty">Nenhum item com preço em ${tm}.</td></tr>`;
-
-    // Categorias
-    const catRows = CATS.map((c, i) => {
-      const share = annual.spent > 0 ? annual.cats[i] / annual.spent : null;
-      const mavg = active.length ? annual.cats[i] / active.length : null;
-      return `<tr><td><span class="chip ${CATKEY[i]}">${c}</span>
-          <div class="share"><i class="${CATKEY[i]}" style="width:${share ? share * 100 : 0}%"></i></div></td>
-        <td class="n mono">${money(annual.cats[i])}</td><td class="n mono">${pct(share)}</td><td class="n mono c-avg">${money(mavg)}</td></tr>`;
-    }).join("");
-
-    // Resumo mensal
-    const resumoRows = sums.map(x => {
-      const mix = x.s.cats.map((v, i) => (v > 0 ? `<i class="${CATKEY[i]}" style="width:${(v / x.s.spent) * 100}%"></i>` : "")).join("");
-      return `<tr data-view="${x.m}">
-        <td class="c-mes">${x.m}</td>
-        <td class="n mono c-tot">${money(x.s.spent)}</td>
-        <td class="n mono c-cnt-a">${x.s.bought}</td>
-        <td class="n mono c-cnt-b">${x.s.pending}</td>
-        <td class="c-cnt">${x.s.bought} comprados · ${x.s.pending} pendentes</td>
-        ${x.s.cats.map(v => `<td class="n mono c-cat4">${money(v)}</td>`).join("")}
-        <td class="c-mix"><div class="mix">${mix}</div></td>
-      </tr>`;
-    }).join("");
-
-    $view.innerHTML = `
-      <div class="dash-grid">
-        ${kpis}
-        <section class="card">
-          <h3>Evolução de gastos mensais <small>só itens comprados</small></h3>
-          <div class="bars">${bars}</div>
-          ${legend}
-        </section>
-        <div class="stack">
-          <section class="card">
-            <h3>Top 5 itens mais caros</h3>
-            <div class="top5-head">
-              <label for="topMonth">Mês</label>
-              <select id="topMonth" class="sel">${MESES.map(m => `<option${m === tm ? " selected" : ""}>${m}</option>`).join("")}</select>
-            </div>
-            <div class="table-wrap"><table class="top5">
-              <thead><tr><th>Pos.</th><th>Item</th><th class="n">Preço total</th><th class="c-cat">Categoria</th></tr></thead>
-              <tbody>${topRows}</tbody></table></div>
-          </section>
-          <section class="card">
-            <h3>Gasto anual por categoria</h3>
-            <div class="table-wrap"><table class="cats">
-              <thead><tr><th>Categoria</th><th class="n">Total</th><th class="n">% do total</th><th class="n c-avg">Média mensal</th></tr></thead>
-              <tbody>${catRows}</tbody>
-              <tfoot><tr><td>Total</td><td class="n mono">${money(annual.spent)}</td><td class="n mono">${annual.spent > 0 ? "100%" : "—"}</td><td class="c-avg"></td></tr></tfoot>
-            </table></div>
-          </section>
-        </div>
-        <section class="card full">
-          <h3>Resumo mensal <small>toque em um mês para abrir a lista</small></h3>
-          <div class="table-wrap"><table class="resumo clickable">
-            <thead><tr><th>Mês</th><th class="n">Total gasto</th><th class="n">Comprados</th><th class="n">Pendentes</th>
-              ${CATS.map(c => `<th class="n c-cat4">${c}</th>`).join("")}</tr></thead>
-            <tbody>${resumoRows}</tbody>
-            <tfoot><tr>
-              <td class="c-mes">Total anual</td><td class="n mono c-tot">${money(annual.spent)}</td>
-              <td class="n mono c-cnt-a">${annual.bought}</td><td class="n mono c-cnt-b">${annual.pending}</td>
-              <td class="c-cnt">${annual.bought} comprados · ${annual.pending} pendentes</td>
-              ${annual.cats.map(v => `<td class="n mono c-cat4">${money(v)}</td>`).join("")}
-              <td class="c-mix"></td>
-            </tr></tfoot>
-          </table></div>
-        </section>
-      </div>`;
-
-    $view.querySelector("#topMonth").addEventListener("change", e => {
-      state.topMonth = e.target.value; save(); renderDash();
-    });
-    $view.querySelectorAll(".bar-row, .resumo tbody tr").forEach(el => {
-      el.addEventListener("click", () => go(el.dataset.view));
-    });
-  }
-
-  /* ---------------- Mês ---------------- */
-  function catOptions(sel) {
-    const ci = catIdx(sel);
-    return CATS.map((c, i) => `<option value="${c}"${i === ci ? " selected" : ""}>${c}</option>`).join("");
-  }
-
-  function rowHTML(r, mIdx) {
-    const prev = prevPrice(mIdx, r.item);
-    const tot = rowTotal(r);
-    const eco = economy(prev, r.unit);
-    const ci = catIdx(r.cat);
-    const hide = (state.filter === "pend" && r.bought) || (state.filter === "ok" && !r.bought) ? " hidden" : "";
-    return `<tr data-id="${r.id}" class="${r.bought ? "is-ok" : "is-pend"}"${hide}>
-      <td class="c-chk"><label class="chk"><input type="checkbox" data-f="bought" id="b-${r.id}"${r.bought ? " checked" : ""} aria-label="Comprado"><span></span></label></td>
-      <td class="c-cat"><select data-f="cat" id="c-${r.id}" aria-label="Categoria" data-cat="${ci >= 0 ? CATKEY[ci] : ""}">${catOptions(r.cat)}</select></td>
-      <td class="c-item"><input data-f="item" id="i-${r.id}" value="${esc(r.item)}" placeholder="Nome do item" aria-label="Item" autocomplete="off"></td>
-      <td class="c-qty" data-label="Qtd."><input data-f="qty" id="q-${r.id}" class="num" inputmode="decimal" value="${numIn(r.qty)}" aria-label="Quantidade"></td>
-      <td class="c-prev" data-label="Mês passado"><span class="out" data-o="prev">${isNum(prev) ? money(prev) : '<span class="dim">—</span>'}</span></td>
-      <td class="c-unit" data-label="Preço unit."><input data-f="unit" id="u-${r.id}" class="num" inputmode="decimal" placeholder="0,00" value="${numIn(r.unit)}" aria-label="Preço unitário"></td>
-      <td class="c-tot" data-label="Total"><span class="out" data-o="tot">${isNum(tot) ? money(tot) : '<span class="dim">—</span>'}</span></td>
-      <td class="c-eco" data-label="Economia"><span class="out ${ecoClass(eco)}" data-o="eco">${isNum(eco) ? signed(eco) : '<span class="dim">—</span>'}</span></td>
-      <td class="c-brand" data-label="Marca"><input data-f="brand" id="m-${r.id}" value="${esc(r.brand)}" aria-label="Marca"></td>
-      <td class="c-obs" data-label="Observações"><input data-f="obs" id="o-${r.id}" value="${esc(r.obs)}" aria-label="Observações"></td>
-      <td class="c-del"><button type="button" class="del" data-act="del" aria-label="Remover ${esc(r.item || "item")}">×</button></td>
-    </tr>`;
-  }
-  function ecoClass(eco) {
-    if (!isNum(eco)) return "";
-    const r = round2(eco);
-    return r > 0 ? "eco-pos" : r < 0 ? "eco-neg" : "";
-  }
-
-  function renderMonth(m) {
-    const mIdx = MESES.indexOf(m);
-    const rows = state.months[m];
-    const f = state.filter || "all";
-    const segBtn = (k, label) => `<button type="button" data-filter="${k}" aria-pressed="${f === k}">${label}</button>`;
-    $view.innerHTML = `
-      <section class="month-head">
-        <div>
-          <p class="eyebrow">Mês ${mIdx + 1} de 12${mIdx > 0 ? ` · preços comparados com ${MESES[mIdx - 1]}` : ""}</p>
-          <h2>${m} 2026</h2>
-        </div>
-        <div class="mstats" id="mstats"></div>
-      </section>
-      <div class="toolbar">
-        <div class="seg" role="group" aria-label="Filtrar itens">${segBtn("all", "Todos")}${segBtn("pend", "Pendentes")}${segBtn("ok", "Comprados")}</div>
-        <div class="tools">
-          <button type="button" class="btn" id="addBtn">+ Adicionar item</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table class="items">
-          <thead><tr>
-            <th aria-label="Comprado">✓</th><th>Categoria</th><th>Item</th><th class="n">Qtd.</th>
-            <th class="n">Mês passado</th><th class="n">Preço unit.</th><th class="n">Preço total</th>
-            <th class="n">Economia</th><th>Marca</th><th>Observações</th><th aria-label="Remover"></th>
-          </tr></thead>
-          <tbody id="tbody">${rows.map(r => rowHTML(r, mIdx)).join("")}</tbody>
-          <tfoot><tr>
-            <td colspan="6" id="tfCount"></td>
-            <td class="n mono" id="tfSpent"></td>
-            <td colspan="4" class="muted" id="tfPlanned"></td>
-          </tr></tfoot>
-        </table>
-      </div>
-      <p class="empty" id="emptyMsg" hidden></p>
-      <section class="catsub" id="catsub" aria-label="Gasto por categoria"></section>
-      <div class="mbar" id="mbar" aria-live="polite"></div>`;
-
-    refreshTotals(m);
-
-    const tbody = document.getElementById("tbody");
-    tbody.addEventListener("input", e => onField(e, m, mIdx));
-    tbody.addEventListener("change", e => onField(e, m, mIdx));
-    tbody.addEventListener("click", e => {
-      const del = e.target.closest('[data-act="del"]');
-      if (!del) return;
-      const tr = del.closest("tr");
-      state.months[m] = state.months[m].filter(r => r.id !== tr.dataset.id);
-      tr.remove();
-      save(); refreshTotals(m); renderTabs();
-    });
-    // ao sair de um campo numérico, mostra o valor normalizado
-    tbody.addEventListener("focusout", e => {
-      const f = e.target.dataset && e.target.dataset.f;
-      if (f !== "qty" && f !== "unit") return;
-      const r = findRow(m, e.target.closest("tr").dataset.id);
-      if (r) e.target.value = numIn(r[f]);
-    });
-
-    document.getElementById("addBtn").addEventListener("click", () => {
-      const r = mkRow(0, "", 1, 0, null);
-      state.months[m].push(r);
-      if (state.filter === "ok") state.filter = "all";
-      save();
-      renderMonth(m);
-      const inp = document.getElementById("i-" + r.id);
-      if (inp) { inp.scrollIntoView({ block: "center" }); inp.focus(); }
-    });
-    $view.querySelectorAll("[data-filter]").forEach(b => b.addEventListener("click", () => {
-      state.filter = b.dataset.filter; save(); renderMonth(m);
-    }));
-  }
-
-  function findRow(m, id) { return state.months[m].find(r => r.id === id); }
-
-  function onField(e, m, mIdx) {
-    const el = e.target;
-    const f = el.dataset && el.dataset.f;
-    if (!f) return;
-    if (f === "bought" && e.type !== "change") return;
-    if (f === "cat" && e.type !== "change") return;
-    const tr = el.closest("tr");
-    const r = findRow(m, tr.dataset.id);
-    if (!r) return;
-
-    if (f === "bought") r.bought = el.checked;
-    else if (f === "qty" || f === "unit") r[f] = parseNum(el.value);
-    else r[f] = el.value;
-
-    if (f === "bought") {
-      tr.className = r.bought ? "is-ok" : "is-pend";
-      if ((state.filter === "pend" && r.bought) || (state.filter === "ok" && !r.bought)) {
-        setTimeout(() => { tr.hidden = true; refreshTotals(m); }, 350);
-      }
-      renderTabs();
-    }
-    if (f === "cat") {
-      const ci = catIdx(r.cat);
-      el.dataset.cat = ci >= 0 ? CATKEY[ci] : "";
-    }
-    if (f === "item" || f === "qty" || f === "unit") updateRowOutputs(tr, r, mIdx);
-    save();
-    refreshTotals(m);
-  }
-
-  function updateRowOutputs(tr, r, mIdx) {
-    const prev = prevPrice(mIdx, r.item);
-    const tot = rowTotal(r);
-    const eco = economy(prev, r.unit);
-    tr.querySelector('[data-o="prev"]').innerHTML = isNum(prev) ? money(prev) : '<span class="dim">—</span>';
-    tr.querySelector('[data-o="tot"]').innerHTML = isNum(tot) ? money(tot) : '<span class="dim">—</span>';
-    const ecoEl = tr.querySelector('[data-o="eco"]');
-    ecoEl.className = "out " + ecoClass(eco);
-    ecoEl.innerHTML = isNum(eco) ? signed(eco) : '<span class="dim">—</span>';
-  }
-
-  function refreshTotals(m) {
-    const s = summary(m);
-    const total = s.bought + s.pending;
-    const prog = total ? (s.bought / total) * 100 : 0;
-    const count = `${s.bought} comprados · ${s.pending} pendentes`;
-
-    const mstats = document.getElementById("mstats");
-    if (mstats) mstats.innerHTML = `
-      <div class="mstat main"><p class="eyebrow">Total geral do mês</p><div class="val">${money(s.spent)}</div></div>
-      <div class="mstat"><p class="eyebrow">Previsto (lista toda)</p><div class="val">${money(s.planned)}</div></div>
-      <div class="mstat" style="min-width:12rem"><p class="eyebrow">${count}</p><div class="progress" style="margin-top:9px"><i style="width:${prog}%"></i></div></div>`;
-
-    const tfc = document.getElementById("tfCount");
-    if (tfc) {
-      tfc.textContent = "Total geral do mês · " + count;
-      document.getElementById("tfSpent").textContent = money(s.spent);
-      document.getElementById("tfPlanned").textContent = "Previsto (lista toda): " + money(s.planned);
-    }
-
-    const catsub = document.getElementById("catsub");
-    if (catsub) catsub.innerHTML = CATS.map((c, i) =>
-      `<div class="kpi"><p class="eyebrow"><span class="sw ${CATKEY[i]}"></span> ${c}</p><div class="val">${money(s.cats[i])}</div><div class="sub">comprado no mês</div></div>`
-    ).join("");
-
-    const mbar = document.getElementById("mbar");
-    if (mbar) mbar.innerHTML = `
-      <div class="row">
-        <div><small>Total comprado</small><div class="big">${money(s.spent)}</div></div>
-        <div class="r"><small>Previsto</small><div class="mono">${money(s.planned)}</div></div>
-      </div>
-      <div class="row"><small>${count}</small><small>${Math.round(prog)}%</small></div>
-      <div class="progress"><i style="width:${prog}%"></i></div>`;
-
-    const empty = document.getElementById("emptyMsg");
-    const tbody = document.getElementById("tbody");
-    if (empty && tbody) {
-      const visible = Array.from(tbody.rows).some(tr => !tr.hidden);
-      empty.hidden = visible;
-      if (!visible) {
-        empty.textContent = !state.months[m].length
-          ? "Lista vazia. Toque em “Adicionar item” para começar."
-          : state.filter === "pend" ? "Tudo comprado neste mês." : "Nenhum item comprado ainda neste mês.";
-      }
-    }
-  }
-
-  /* ---------------- Painel do banco de dados ---------------- */
+  /* ---------------- Status do banco ---------------- */
   const MODE_LABEL = { server: "db.json", file: "Arquivo", local: "Navegador" };
-  let panelMsg = "";
-  let confirmReset = false;
-
   function timeLabel(iso) {
     if (!iso) return "";
     const d = new Date(iso);
     if (isNaN(d)) return "";
-    const today = new Date().toDateString() === d.toDateString();
-    return today
+    return new Date().toDateString() === d.toDateString()
       ? d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
       : d.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
   }
-
+  let lastStatus = "ok";
   function setStatus(status, msg) {
+    const was = lastStatus;
     DB.status = status;
     DB.msg = msg || "";
+    lastStatus = status;
     renderStatus();
+    if (status === "err" && was !== "err" && state) {
+      toast(DB.msg || "Não foi possível salvar.", { error: true, action: "Tentar de novo", onAction: () => { DB.lastSaved = ""; flush(); } });
+    }
+    if (status === "ok" && was === "err") toast("Alterações salvas.");
+    if (sheetKind === "data") renderDataSheet();
   }
   function renderStatus() {
     let text;
     if (DB.status === "busy") text = "Salvando…";
     else if (DB.status === "err") text = "Erro ao salvar";
-    else text = MODE_LABEL[DB.mode] + (DB.updatedAt ? " · salvo " + timeLabel(DB.updatedAt) : "");
+    else text = MODE_LABEL[DB.mode] + (DB.updatedAt ? " · " + timeLabel(DB.updatedAt) : "");
     $status.className = "db-pill " + DB.status;
-    $status.textContent = text;
-    $status.title = DB.msg || text;
-    if (!$panel.hidden) renderPanel();
+    $status.innerHTML = `<span class="t">${esc(text)}</span>`;
+    $status.setAttribute("aria-label", "Banco de dados: " + text + ". Abrir opções de dados");
+    $status.title = DB.msg || "Banco de dados: " + text;
   }
 
-  function renderPanel() {
-    const where = {
-      server: `Gravando no arquivo <b>db.json</b> da pasta do sistema, pelo servidor local. No celular, abra o mesmo endereço (na mesma rede Wi-Fi) e os dois aparelhos usam o mesmo banco. A cada gravação a versão anterior fica em <b>db.backup.json</b>.`,
-      file: `Gravando direto no arquivo <b>${esc(DB.fileName)}</b> que você conectou. Ao reabrir o sistema, conecte o arquivo de novo.`,
-      local: `Sem servidor: os dados ficam guardados neste navegador. Para ter o banco em arquivo, rode <code>node server.js</code> na pasta do sistema${canPickFile ? " ou conecte um db.json abaixo" : ""}. Use <b>Exportar</b> para guardar uma cópia.`
-    }[DB.mode];
-    const fileBtns = DB.mode !== "server" && canPickFile ? `
-        <button type="button" class="btn ghost" data-act="open-file">Abrir db.json do computador</button>
-        <button type="button" class="btn ghost" data-act="new-file">Salvar como novo db.json</button>` : "";
-    const reset = confirmReset
-      ? `<span class="confirm"><span>Apagar as alterações e voltar aos dados da planilha?</span>
-           <button type="button" class="btn danger" data-act="reset-yes">Restaurar</button>
-           <button type="button" class="btn ghost" data-act="reset-no">Cancelar</button></span>`
-      : `<button type="button" class="btn ghost" data-act="reset">Restaurar dados da planilha</button>`;
+  /* ---------------- Navegação ---------------- */
+  let monthAnim = "";
+  function go(view, month) {
+    if (month && MESES.includes(month)) {
+      const from = MESES.indexOf(state.month), to = MESES.indexOf(month);
+      monthAnim = to > from ? "slide-l" : to < from ? "slide-r" : "fade-in";
+      state.month = month;
+    } else monthAnim = "fade-in";
+    state.view = view;
+    savePrefs();
+    render();
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+  $tabs.forEach(b => b.addEventListener("click", () => go(b.dataset.goto)));
+  $status.addEventListener("click", () => openDataSheet());
+  $addTop.addEventListener("click", () => openItemSheet(null));
+
+  function render() {
+    $view.removeAttribute("aria-busy");
+    $tabs.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.goto === state.view)));
+    $addTop.disabled = false;
+    $addTop.innerHTML = `${icon("plus")}Adicionar item`;
+    if (state.view === "year") { renderYear(); $bar.hidden = true; document.body.classList.remove("has-bar"); }
+    else { renderMonth(); $bar.hidden = false; document.body.classList.add("has-bar"); renderBar(); }
+  }
+
+  /* ---------------- Tela do mês ---------------- */
+  function bannerHTML() {
+    if (DB.readonly) {
+      return `<div class="banner err" role="alert">${icon("alert")}<div class="grow"><b>Não foi possível ler o db.json</b>
+        O arquivo está com problema, então nada será gravado por cima dele. Corrija o arquivo ou importe um backup válido.</div>
+        <button type="button" class="btn" data-act="open-data">Ver dados</button></div>`;
+    }
+    return "";
+  }
+
+  function renderMonth() {
+    const m = state.month;
+    const mIdx = MESES.indexOf(m);
+    $view.innerHTML = `
+      ${bannerHTML()}
+      <div class="monthbar">
+        <button type="button" class="icon-btn" data-act="prev" ${mIdx === 0 ? "disabled" : ""} aria-label="${mIdx > 0 ? "Ir para " + MESES[mIdx - 1] : "Sem mês anterior"}">${icon("chevL")}</button>
+        <button type="button" class="month-current" id="monthBtn" aria-haspopup="true" aria-expanded="false" aria-controls="monthPop">
+          <h1>${m} 2026</h1>${icon("chevD")}
+        </button>
+        <button type="button" class="icon-btn" data-act="next" ${mIdx === 11 ? "disabled" : ""} aria-label="${mIdx < 11 ? "Ir para " + MESES[mIdx + 1] : "Sem próximo mês"}">${icon("chevR")}</button>
+        <span class="spacer"></span>
+        <span class="month-hint">${mIdx > 0 ? "Preços comparados com " + MESES[mIdx - 1] : "Primeiro mês do ano"}</span>
+        <div class="month-pop" id="monthPop" hidden></div>
+      </div>
+      <div class="month-layout ${monthAnim}">
+        <aside class="summary" id="summary" aria-label="Resumo do mês"></aside>
+        <section class="listsec" aria-labelledby="listTitle">
+          <div class="listhead"><h2 id="listTitle">Lista de compras</h2><span class="count" id="visibleCount" aria-live="polite"></span></div>
+          <div class="controls">
+            <label class="search" for="q">${icon("search")}<span class="sr-only">Buscar item</span>
+              <input type="search" id="q" placeholder="Buscar item" autocomplete="off" value="${esc(ui.q)}">
+              <button type="button" class="icon-btn" data-act="clear-q" aria-label="Limpar busca" ${ui.q ? "" : "hidden"}>${icon("x", "sm")}</button>
+            </label>
+            <div class="seg" role="group" aria-label="Mostrar" id="filterSeg"></div>
+            <div class="ctrl-more">
+              <label class="sr-only" for="sortSel">Ordenar</label>
+              <select class="select" id="sortSel">
+                <option value="list">Ordem da lista</option>
+                <option value="pending">Pendentes primeiro</option>
+                <option value="name">Nome (A–Z)</option>
+                <option value="value">Maior valor</option>
+              </select>
+              <label class="toggle"><input type="checkbox" id="groupChk" ${state.group ? "checked" : ""}><span class="sw"></span>Por categoria</label>
+            </div>
+          </div>
+          <div class="list" id="list"></div>
+        </section>
+      </div>`;
+    monthAnim = "";
+    document.getElementById("sortSel").value = state.sort;
+    renderSummary();
+    renderList();
+  }
+
+  function renderSummary() {
+    const el = document.getElementById("summary");
+    if (!el) return;
+    const m = state.month, mIdx = MESES.indexOf(m);
+    const s = summary(m);
+    const total = s.bought + s.pending;
+    const prog = total ? (s.bought / total) * 100 : 0;
+    const ps = priceSummary(m);
+    const prevM = mIdx > 0 ? MESES[mIdx - 1] : null;
+    const catBar = s.spent > 0
+      ? s.cats.map((v, i) => (v > 0 ? `<i class="${CATKEY[i]}" style="width:${(v / s.spent) * 100}%" title="${CATS[i]}: ${money(v)}"></i>` : "")).join("")
+      : "";
+    let priceTxt, priceSub;
+    if (!prevM) { priceTxt = "Sem dados para comparar"; priceSub = "Janeiro é o primeiro mês do ano"; }
+    else if (!ps.n) { priceTxt = "Sem dados para comparar"; priceSub = `Nenhum item com preço em ${m} e em ${prevM}`; }
+    else {
+      const a = ps.avg, dir = Math.abs(a) < 0.0005 ? "eq" : a > 0 ? "up" : "down";
+      priceTxt = dir === "eq" ? "Preços estáveis" : `${dir === "up" ? "Subiram" : "Caíram"} ${pctFmt(Math.abs(a))} em média`;
+      priceSub = `${ps.n} ${ps.n === 1 ? "item comparado" : "itens comparados"} com ${prevM} · ${ps.down} mais ${ps.down === 1 ? "barato" : "baratos"}, ${ps.up} mais ${ps.up === 1 ? "caro" : "caros"}`;
+    }
+    el.innerHTML = `
+      <section class="card hero" aria-labelledby="heroLbl">
+        <div>
+          <p class="label" id="heroLbl">Total gasto em ${m}</p>
+          <p class="big money">${money(s.spent)}</p>
+        </div>
+        <p class="planned">Previsto para a lista toda: <b class="money">${money(s.planned)}</b></p>
+        <div>
+          <div class="progress" role="progressbar" aria-label="Itens comprados" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${s.bought}"><i style="width:${prog}%"></i></div>
+          <div class="progress-row"><span><b>${s.bought}</b> de ${total} itens comprados</span><span>${Math.round(prog)}%</span></div>
+        </div>
+        <div class="catmix">
+          <span class="eyebrow">Gasto por categoria</span>
+          <div class="bar" aria-hidden="true">${catBar}</div>
+          <ul>${CATS.map((c, i) => `<li><span class="dot ${CATKEY[i]}"></span><span class="n">${c}</span><span class="v money">${money(s.cats[i])}</span></li>`).join("")}</ul>
+        </div>
+      </section>
+      <section class="card stats" aria-label="Indicadores">
+        <button type="button" class="stat" data-filter="pend" aria-label="Mostrar ${s.pending} itens pendentes">
+          <span class="stat-ic amber">${icon("clock")}</span>
+          <span><span class="t">Pendentes</span><span class="s">ainda não comprados</span></span>
+          <span class="n">${s.pending}</span>
+        </button>
+        <button type="button" class="stat" data-filter="ok" aria-label="Mostrar ${s.bought} itens comprados">
+          <span class="stat-ic green">${icon("check")}</span>
+          <span><span class="t">Comprados</span><span class="s">já no carrinho</span></span>
+          <span class="n">${s.bought}</span>
+        </button>
+        <div class="stat stat-price">
+          <span class="stat-ic ${ps.n ? (ps.avg > 0.0005 ? "amber" : "green") : "neutral"}">${icon("trend")}</span>
+          <span><span class="t">${priceTxt}</span><span class="s">${priceSub}</span></span>
+          <span></span>
+        </div>
+      </section>`;
+  }
+
+  function visibleRows() {
+    const m = state.month;
+    const q = fold(ui.q);
+    let rows = state.months[m].map((r, i) => ({ r: r, i: i }));
+    if (q) rows = rows.filter(x => fold(x.r.item).includes(q));
+    if (state.filter === "pend") rows = rows.filter(x => !x.r.bought);
+    else if (state.filter === "ok") rows = rows.filter(x => x.r.bought);
+    const cmpName = (a, b) => fold(a.r.item).localeCompare(fold(b.r.item), "pt-BR");
+    if (state.sort === "name") rows.sort(cmpName);
+    else if (state.sort === "pending") rows.sort((a, b) => (a.r.bought - b.r.bought) || (a.i - b.i));
+    else if (state.sort === "value") rows.sort((a, b) => (rowTotal(b.r) || -1) - (rowTotal(a.r) || -1) || (a.i - b.i));
+    return rows;
+  }
+
+  function itemHTML(r, mIdx) {
+    const tot = rowTotal(r);
+    const ci = catIdx(r.cat);
+    const c = compareInfo(mIdx, r);
+    const prevM = mIdx > 0 ? MESES[mIdx - 1] : "";
+    const qtyTxt = isNum(r.qty) ? numIn(r.qty) : "—";
+    const priceTxt = isNum(r.unit) ? `${qtyTxt} × ${money(r.unit)}` : `Qtd. ${qtyTxt}`;
+    const name = r.item.trim() || "Item sem nome";
+    return `<li class="item${r.bought ? " done" : ""}" data-id="${r.id}">
+      <label class="check" title="${r.bought ? "Desmarcar" : "Marcar como comprado"}">
+        <input type="checkbox" data-act="toggle" ${r.bought ? "checked" : ""} aria-label="${esc(name)}: ${r.bought ? "comprado" : "pendente"}. Marcar como ${r.bought ? "pendente" : "comprado"}">
+        <span class="box">${icon("check")}</span>
+      </label>
+      <button type="button" class="item-main" data-act="edit" aria-label="Editar ${esc(name)}">
+        <span class="item-name">${esc(name)}</span>
+        <span class="item-meta">
+          ${r.bought ? `<span class="done-tag">${icon("check")}Comprado</span>` : ""}
+          ${state.group ? "" : `<span class="cat"><span class="dot ${ci >= 0 ? CATKEY[ci] : ""}"></span>${esc(ci >= 0 ? CATS[ci] : r.cat || "Sem categoria")}</span>`}
+          <span>${priceTxt}</span>
+          ${deltaChip(c, prevM)}
+        </span>
+        <span class="item-total money">${isNum(tot) ? money(tot) : `<span class="noprice">Sem preço</span>`}</span>
+        <span class="edit-ic">${icon("pencil", "sm")}</span>
+      </button>
+    </li>`;
+  }
+
+  function renderList() {
+    const list = document.getElementById("list");
+    if (!list) return;
+    const m = state.month, mIdx = MESES.indexOf(m);
+    const all = state.months[m];
+    const s = summary(m);
+    const rows = visibleRows();
+
+    document.getElementById("filterSeg").innerHTML = [["all", "Todos", all.length], ["pend", "Pendentes", s.pending], ["ok", "Comprados", s.bought]]
+      .map(([k, l, n]) => `<button type="button" data-filter="${k}" aria-pressed="${state.filter === k}">${l}<span class="c">${n}</span></button>`).join("");
+    const cnt = document.getElementById("visibleCount");
+    cnt.textContent = rows.length === all.length ? `${all.length} ${all.length === 1 ? "item" : "itens"}` : `${rows.length} de ${all.length} itens`;
+
+    if (!all.length) {
+      list.innerHTML = emptyHTML("cart", `Nenhum item em ${m}`, "Adicione o primeiro produto da lista deste mês.", true);
+      return;
+    }
+    if (!rows.length) {
+      if (ui.q) list.innerHTML = emptyHTML("search", "Nenhum item encontrado", `Nada com “${esc(ui.q)}” ${state.filter === "all" ? "" : "neste filtro"} em ${m}.`, false, "clear-q", "Limpar busca");
+      else if (state.filter === "pend") list.innerHTML = emptyHTML("check", "Tudo comprado", `Todos os itens de ${m} já estão marcados.`, false, "filter-all", "Ver todos");
+      else list.innerHTML = emptyHTML("clock", "Nada comprado ainda", `Marque os itens conforme colocar no carrinho.`, false, "filter-all", "Ver todos");
+      return;
+    }
+
+    if (state.group) {
+      const groups = CATS.map((c, i) => ({ c: c, key: CATKEY[i], rows: [] }));
+      const other = { c: "Outras", key: "", rows: [] };
+      rows.forEach(x => { const ci = catIdx(x.r.cat); (ci >= 0 ? groups[ci] : other).rows.push(x); });
+      list.innerHTML = groups.concat([other]).filter(g => g.rows.length).map(g => {
+        const done = g.rows.filter(x => x.r.bought).length;
+        const spent = g.rows.reduce((t, x) => t + (x.r.bought && isNum(rowTotal(x.r)) ? rowTotal(x.r) : 0), 0);
+        return `<section class="group" aria-label="${g.c}">
+          <div class="group-head"><span class="dot ${g.key}"></span><h3>${g.c}</h3><span class="meta">${done}/${g.rows.length} · ${money(spent)}</span></div>
+          <ul class="items">${g.rows.map(x => itemHTML(x.r, mIdx)).join("")}</ul></section>`;
+      }).join("");
+    } else {
+      list.innerHTML = `<ul class="items">${rows.map(x => itemHTML(x.r, mIdx)).join("")}</ul>`;
+    }
+  }
+
+  function emptyHTML(ic, title, text, withAdd, act, actLabel) {
+    return `<div class="empty"><span class="ic">${icon(ic)}</span><h3>${title}</h3><p>${text}</p>
+      ${withAdd ? `<button type="button" class="btn btn-primary" data-act="add">${icon("plus")}Adicionar item</button>` : ""}
+      ${act ? `<button type="button" class="btn" data-act="${act}">${actLabel}</button>` : ""}</div>`;
+  }
+
+  function renderBar() {
+    const m = state.month, s = summary(m);
+    const total = s.bought + s.pending;
+    const prog = total ? (s.bought / total) * 100 : 0;
+    $bar.innerHTML = `
+      <div class="sum">
+        <div class="top"><b class="money">${money(s.spent)}</b><small>${s.bought}/${total} comprados</small></div>
+        <div class="progress" aria-hidden="true"><i style="width:${prog}%"></i></div>
+      </div>
+      <button type="button" class="btn btn-primary" data-act="add">${icon("plus")}Adicionar</button>`;
+  }
+  $bar.addEventListener("click", e => { if (e.target.closest('[data-act="add"]')) openItemSheet(null); });
+
+  function refreshMonth() { renderSummary(); renderList(); renderBar(); }
+
+  // popover de meses
+  function openMonthPop() {
+    const pop = document.getElementById("monthPop"), btn = document.getElementById("monthBtn");
+    pop.innerHTML = MESES.map(mm => {
+      const s = summary(mm);
+      const sub = s.spent > 0 ? money(s.spent) : `${s.bought + s.pending} itens`;
+      return `<button type="button" data-month="${mm}" ${mm === state.month ? 'aria-current="true"' : ""}>
+        <span class="mn">${MES_ABREV(mm)}${s.bought ? '<span class="dot" aria-hidden="true"></span>' : ""}</span><span class="mv">${sub}</span></button>`;
+    }).join("");
+    pop.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    const cur = pop.querySelector('[aria-current="true"]');
+    if (cur) cur.focus();
+  }
+  function closeMonthPop(focusBtn) {
+    const pop = document.getElementById("monthPop"), btn = document.getElementById("monthBtn");
+    if (!pop || pop.hidden) return;
+    pop.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    if (focusBtn) btn.focus();
+  }
+  document.addEventListener("click", e => {
+    const pop = document.getElementById("monthPop");
+    if (pop && !pop.hidden && !e.target.closest("#monthPop") && !e.target.closest("#monthBtn")) closeMonthPop(false);
+  });
+
+  // eventos da tela (delegação)
+  $view.addEventListener("click", e => {
+    const t = e.target;
+    const actEl = t.closest("[data-act]");
+    const act = actEl && actEl.dataset.act;
+    if (t.closest("#monthBtn")) { const pop = document.getElementById("monthPop"); pop.hidden ? openMonthPop() : closeMonthPop(true); return; }
+    const mb = t.closest("[data-month]");
+    if (mb && t.closest("#monthPop")) { closeMonthPop(false); go("month", mb.dataset.month); return; }
+    const fb = t.closest("[data-filter]");
+    if (fb) { state.filter = state.filter === fb.dataset.filter && fb.classList.contains("stat") ? "all" : fb.dataset.filter; savePrefs(); renderList(); return; }
+    if (!act || act === "toggle") return;
+    const mIdx = MESES.indexOf(state.month);
+    if (act === "prev" && mIdx > 0) go("month", MESES[mIdx - 1]);
+    else if (act === "next" && mIdx < 11) go("month", MESES[mIdx + 1]);
+    else if (act === "edit") openItemSheet(actEl.closest(".item").dataset.id);
+    else if (act === "add") openItemSheet(null);
+    else if (act === "clear-q") {
+      ui.q = "";
+      const q = document.getElementById("q");
+      if (q) { q.value = ""; q.focus(); }
+      const clr = document.querySelector('.search [data-act="clear-q"]');
+      if (clr) clr.hidden = true;
+      renderList();
+    }
+    else if (act === "filter-all") { state.filter = "all"; savePrefs(); renderList(); }
+    else if (act === "open-data") openDataSheet();
+    else if (act === "goto-month") go("month", actEl.dataset.m);
+  });
+  $view.addEventListener("change", e => {
+    const t = e.target;
+    if (t.dataset.act === "toggle") return toggleItem(t);
+    if (t.id === "sortSel") { state.sort = t.value; savePrefs(); renderList(); }
+    if (t.id === "groupChk") { state.group = t.checked; savePrefs(); renderList(); }
+    if (t.id === "topMonth") { state.topMonth = t.value; savePrefs(); renderYear(); }
+  });
+  $view.addEventListener("input", e => {
+    if (e.target.id !== "q") return;
+    ui.q = e.target.value;
+    const clr = document.querySelector('.search [data-act="clear-q"]');
+    if (clr) clr.hidden = !ui.q;
+    renderList();
+  });
+  $view.addEventListener("keydown", e => {
+    if (e.key === "Escape") { const pop = document.getElementById("monthPop"); if (pop && !pop.hidden) closeMonthPop(true); }
+  });
+
+  function toggleItem(input) {
+    const li = input.closest(".item");
+    const r = findRow(state.month, li.dataset.id);
+    if (!r) return;
+    r.bought = input.checked;
+    save();
+    li.classList.toggle("done", r.bought);
+    const chk = li.querySelector(".check");
+    chk.classList.remove("pulse"); void chk.offsetWidth; chk.classList.add("pulse");
+    if (navigator.vibrate && r.bought) { try { navigator.vibrate(12); } catch (err) { /* ignora */ } }
+    renderSummary(); renderBar();
+    const leaves = (state.filter === "pend" && r.bought) || (state.filter === "ok" && !r.bought);
+    const id = r.id;
+    if (leaves && !reduceMotion()) { li.classList.add("leaving"); setTimeout(() => { renderList(); }, 320); }
+    else {
+      // atualiza só a linha (mantém o foco no controle)
+      setTimeout(() => {
+        const mIdx = MESES.indexOf(state.month);
+        const cur = document.querySelector(`.item[data-id="${id}"]`);
+        if (!cur) return;
+        const tmp = document.createElement("ul"); tmp.innerHTML = itemHTML(r, mIdx);
+        const fresh = tmp.firstElementChild;
+        const hadFocus = document.activeElement && cur.contains(document.activeElement);
+        cur.replaceWith(fresh);
+        if (hadFocus) fresh.querySelector('[data-act="toggle"]').focus();
+        // contadores do filtro e dos grupos
+        const s = summary(state.month);
+        const seg = document.getElementById("filterSeg");
+        if (seg) seg.querySelectorAll("button").forEach(b => {
+          const n = b.dataset.filter === "all" ? state.months[state.month].length : b.dataset.filter === "pend" ? s.pending : s.bought;
+          b.querySelector(".c").textContent = n;
+        });
+        if (state.group) {
+          const g = fresh.closest(".group");
+          if (g) {
+            const items = Array.from(g.querySelectorAll(".item")).map(li2 => findRow(state.month, li2.dataset.id)).filter(Boolean);
+            const done = items.filter(x => x.bought).length;
+            const spent = items.reduce((t, x) => t + (x.bought && isNum(rowTotal(x)) ? rowTotal(x) : 0), 0);
+            g.querySelector(".meta").textContent = `${done}/${items.length} · ${money(spent)}`;
+          }
+        }
+      }, 0);
+    }
+  }
+
+  function findRow(m, id) { return state.months[m].find(r => r.id === id); }
+
+  /* ---------------- Painel (sheet) ---------------- */
+  let sheetKind = null, sheetReturn = null;
+  function openSheet(kind, html) {
+    sheetKind = kind;
+    sheetReturn = document.activeElement;
+    $sheet.innerHTML = html;
+    $layer.hidden = false;
+    document.body.classList.add("lock");
+  }
+  function closeSheet() {
+    if ($layer.hidden) return;
+    $layer.hidden = true;
+    $sheet.innerHTML = "";
+    sheetKind = null;
+    document.body.classList.remove("lock");
+    if (sheetReturn && document.body.contains(sheetReturn)) sheetReturn.focus();
+  }
+  $layer.addEventListener("click", e => { if (e.target.closest("[data-close]")) closeSheet(); });
+  document.addEventListener("keydown", e => {
+    if ($layer.hidden) return;
+    if (e.key === "Escape") { e.preventDefault(); closeSheet(); return; }
+    if (e.key === "Tab") { // mantém o foco dentro do painel
+      const f = Array.from($sheet.querySelectorAll('button, [href], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])')).filter(x => !x.disabled && x.offsetParent !== null);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  /* ---------------- Adicionar / editar item ---------------- */
+  let editing = null; // { id|null, confirmDelete }
+  function openItemSheet(id) {
+    if (state.view !== "month") go("month");
+    const m = state.month, mIdx = MESES.indexOf(m);
+    const r = id ? findRow(m, id) : null;
+    if (id && !r) return;
+    editing = { id: id, confirmDelete: false };
+    const lastCat = ui.lastCat && CATS.includes(ui.lastCat) ? ui.lastCat : CATS[0];
+    const d = r || { item: "", cat: lastCat, qty: 1, unit: null, bought: false, brand: "", obs: "" };
+    const ci = Math.max(0, catIdx(d.cat));
+    const moreOpen = !!(d.brand || d.obs);
+    openSheet("item", `
+      <form id="itemForm" novalidate>
+        <div class="sheet-head">
+          <h2 id="sheetTitle">${r ? "Editar item" : "Novo item"} <span class="label">· ${m}</span></h2>
+          <button type="button" class="icon-btn" data-close aria-label="Fechar">${icon("x")}</button>
+        </div>
+        <div class="sheet-body">
+          <div class="field" id="fw-item">
+            <label for="f-item">Nome do produto</label>
+            <input class="input big" id="f-item" name="item" autocomplete="off" placeholder="Ex.: Arroz 5 kg" value="${esc(d.item)}" aria-describedby="e-item h-prev">
+            <p class="err" id="e-item">${icon("alert", "sm")}<span></span></p>
+            <p class="hint" id="h-prev"></p>
+          </div>
+          <fieldset class="field">
+            <legend class="flabel">Categoria</legend>
+            <div class="chips">${CATS.map((c, i) => `<label class="chip-opt ${CATKEY[i]}"><input type="radio" name="cat" value="${c}" ${i === ci ? "checked" : ""}><span><span class="dot ${CATKEY[i]}"></span>${c}</span></label>`).join("")}</div>
+          </fieldset>
+          <div class="row2">
+            <div class="field" id="fw-qty">
+              <label for="f-qty">Quantidade</label>
+              <div class="stepper">
+                <button type="button" data-step="-1" aria-label="Diminuir quantidade">${icon("minus")}</button>
+                <input id="f-qty" name="qty" inputmode="decimal" autocomplete="off" value="${isNum(d.qty) ? numIn(d.qty) : ""}" aria-describedby="e-qty">
+                <button type="button" data-step="1" aria-label="Aumentar quantidade">${icon("plus")}</button>
+              </div>
+              <p class="err" id="e-qty">${icon("alert", "sm")}<span></span></p>
+            </div>
+            <div class="field" id="fw-unit">
+              <label for="f-unit">Preço unitário <span class="opt">(opcional)</span></label>
+              <div class="money-in"><span>R$</span><input id="f-unit" name="unit" inputmode="decimal" autocomplete="off" placeholder="0,00" value="${isNum(d.unit) ? numIn(d.unit) : ""}" aria-describedby="e-unit"></div>
+              <p class="err" id="e-unit">${icon("alert", "sm")}<span></span></p>
+            </div>
+          </div>
+          <div class="total-line"><span>Preço total</span><b class="money" id="f-total">—</b></div>
+          <div class="compare" id="f-compare" aria-live="polite"></div>
+          <label class="switch-row toggle" for="f-bought">
+            <span><span class="t">Já comprado</span><span class="s" style="display:block">Marque se o item já está no carrinho</span></span>
+            <input type="checkbox" id="f-bought" ${d.bought ? "checked" : ""}><span class="sw"></span>
+          </label>
+          <details class="more" ${moreOpen ? "open" : ""}>
+            <summary>${icon("chevD", "sm")}Marca e observações</summary>
+            <div class="inner">
+              <div class="field"><label for="f-brand">Marca <span class="opt">(opcional)</span></label><input class="input" id="f-brand" autocomplete="off" placeholder="Ex.: Tio João" value="${esc(d.brand)}"></div>
+              <div class="field"><label for="f-obs">Observações <span class="opt">(opcional)</span></label><textarea class="input" id="f-obs" rows="2" placeholder="Ex.: levar o de 1 kg">${esc(d.obs)}</textarea></div>
+            </div>
+          </details>
+        </div>
+        <div class="sheet-foot" id="itemFoot"></div>
+      </form>`);
+    renderItemFoot();
+    updateItemPreview();
+    const f = document.getElementById("itemForm");
+    f.addEventListener("input", e => { clearFieldError(e.target); updateItemPreview(); });
+    f.addEventListener("change", updateItemPreview);
+    f.addEventListener("submit", e => { e.preventDefault(); submitItem(e.submitter && e.submitter.dataset.more === "1"); });
+    f.addEventListener("click", e => {
+      const st = e.target.closest("[data-step]");
+      if (st) {
+        const inp = document.getElementById("f-qty");
+        const cur = parseNum(inp.value);
+        const next = Math.max(1, Math.round(((isNum(cur) ? cur : 0) + Number(st.dataset.step)) * 100) / 100);
+        inp.value = numIn(next); clearFieldError(inp); updateItemPreview();
+      }
+      const a = e.target.closest("[data-fact]");
+      if (a) itemFootAction(a.dataset.fact);
+    });
+    f.querySelectorAll("input:not([type=radio]):not([type=checkbox]), textarea").forEach(inp => {
+      inp.addEventListener("focus", () => { if (isNarrow()) setTimeout(() => inp.scrollIntoView({ block: "center", behavior: reduceMotion() ? "auto" : "smooth" }), 280); });
+    });
+    setTimeout(() => { const n = document.getElementById("f-item"); if (n && !r) n.focus(); else document.getElementById("sheetTitle").setAttribute("tabindex", "-1"), document.getElementById("sheetTitle").focus(); }, 60);
+  }
+
+  function renderItemFoot() {
+    const foot = document.getElementById("itemFoot");
+    if (!foot) return;
+    const r = editing.id ? findRow(state.month, editing.id) : null;
+    if (editing.confirmDelete && r) {
+      foot.innerHTML = `<p class="confirm-text">Excluir “${esc(r.item || "item sem nome")}” de ${state.month}?</p>
+        <button type="button" class="btn" data-fact="cancel-del">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-fact="del">${icon("trash")}Excluir</button>`;
+      foot.querySelector('[data-fact="cancel-del"]').focus();
+      return;
+    }
+    foot.innerHTML = r
+      ? `<button type="button" class="btn btn-danger-quiet" data-fact="ask-del">${icon("trash")}Excluir</button><span class="grow"></span>
+         <button type="button" class="btn" data-close>Cancelar</button>
+         <button type="submit" class="btn btn-primary">Salvar</button>`
+      : `<button type="submit" class="btn" data-more="1">Salvar e adicionar outro</button><span class="grow"></span>
+         <button type="submit" class="btn btn-primary">${icon("plus")}Adicionar</button>`;
+  }
+
+  function itemFootAction(a) {
+    if (a === "ask-del") { editing.confirmDelete = true; renderItemFoot(); }
+    else if (a === "cancel-del") { editing.confirmDelete = false; renderItemFoot(); }
+    else if (a === "del") deleteItem(editing.id);
+  }
+
+  function readItemForm() {
+    const v = id => document.getElementById(id);
+    const catEl = document.querySelector('#itemForm input[name="cat"]:checked');
+    return {
+      item: v("f-item").value.trim(),
+      cat: catEl ? catEl.value : CATS[0],
+      qtyRaw: v("f-qty").value.trim(), unitRaw: v("f-unit").value.trim(),
+      qty: parseNum(v("f-qty").value), unit: parseNum(v("f-unit").value),
+      bought: v("f-bought").checked,
+      brand: v("f-brand").value.trim(), obs: v("f-obs").value.trim()
+    };
+  }
+
+  function updateItemPreview() {
+    if (!document.getElementById("itemForm")) return;
+    const f = readItemForm();
+    const mIdx = MESES.indexOf(state.month);
+    const prevM = mIdx > 0 ? MESES[mIdx - 1] : null;
+    const tot = isNum(f.qty) && isNum(f.unit) ? f.qty * f.unit : null;
+    document.getElementById("f-total").textContent = isNum(tot) ? money(tot) : "—";
+    const prev = prevPrice(mIdx, f.item);
+    const hint = document.getElementById("h-prev");
+    hint.innerHTML = prevM && f.item && isNum(prev) ? `Em ${prevM} o preço unitário foi <b>${money(prev)}</b>.` : "";
+    const box = document.getElementById("f-compare");
+    if (!prevM) { box.innerHTML = `<p class="none">Sem dados para comparar: ${state.month} é o primeiro mês do ano.</p>`; return; }
+    if (!f.item) { box.innerHTML = `<p class="none">Digite o nome para comparar com ${prevM}.</p>`; return; }
+    if (!isNum(prev)) { box.innerHTML = `<p class="none">Sem dados para comparar: “${esc(f.item)}” não tem preço em ${prevM}.</p>`; return; }
+    if (!isNum(f.unit)) { box.innerHTML = `<p class="none">Em ${prevM}: <b>${money(prev)}</b> por unidade. Informe o preço atual para ver a variação.</p>`; return; }
+    const c = compareInfo(mIdx, { item: f.item, unit: f.unit });
+    const word = c.dir === "up" ? "mais caro" : c.dir === "down" ? "mais barato" : "mesmo preço";
+    box.innerHTML = `
+      <div class="ttl"><span>Comparação com ${prevM}</span>${deltaChip(c, prevM) || ""}</div>
+      <dl>
+        <div><dt>Anterior</dt><dd class="money">${money(c.prev)}</dd></div>
+        <div><dt>Atual</dt><dd class="money">${money(f.unit)}</dd></div>
+        <div><dt>Diferença</dt><dd class="money">${c.dir === "eq" ? BRL.format(0) : signed(c.diff)}</dd></div>
+      </dl>
+      <p class="none">${c.dir === "eq" ? "Mesmo preço por unidade." : `${word.charAt(0).toUpperCase() + word.slice(1)} por unidade${isNum(c.pct) ? ` (${c.diff > 0 ? "+" : "−"}${pctFmt(Math.abs(c.pct))})` : ""}.`}</p>`;
+  }
+
+  function setFieldError(name, msg) {
+    const w = document.getElementById("fw-" + name);
+    w.classList.add("invalid");
+    w.querySelector(".err span").textContent = msg;
+    const inp = w.querySelector("input");
+    inp.setAttribute("aria-invalid", "true");
+  }
+  function clearFieldError(inp) {
+    const w = inp && inp.closest(".field");
+    if (w && w.classList.contains("invalid")) { w.classList.remove("invalid"); const i = w.querySelector("input"); if (i) i.removeAttribute("aria-invalid"); }
+  }
+
+  function submitItem(addAnother) {
+    const f = readItemForm();
+    let firstBad = null;
+    if (!f.item) { setFieldError("item", "Informe o nome do produto."); firstBad = firstBad || "f-item"; }
+    if (!f.qtyRaw) { setFieldError("qty", "Informe a quantidade."); firstBad = firstBad || "f-qty"; }
+    else if (!isNum(f.qty)) { setFieldError("qty", "Use só números, ex.: 2 ou 1,5."); firstBad = firstBad || "f-qty"; }
+    else if (f.qty <= 0) { setFieldError("qty", "A quantidade precisa ser maior que zero."); firstBad = firstBad || "f-qty"; }
+    if (f.unitRaw && !isNum(f.unit)) { setFieldError("unit", "Use só números, ex.: 4,99."); firstBad = firstBad || "f-unit"; }
+    else if (isNum(f.unit) && f.unit < 0) { setFieldError("unit", "O preço não pode ser negativo."); firstBad = firstBad || "f-unit"; }
+    if (firstBad) { document.getElementById(firstBad).focus(); return; }
+
+    const m = state.month;
+    const data = { item: f.item, cat: f.cat, qty: f.qty, unit: isNum(f.unit) ? f.unit : null, bought: f.bought, brand: f.brand, obs: f.obs };
+    ui.lastCat = f.cat;
+    if (editing.id) {
+      const r = findRow(m, editing.id);
+      if (!r) { closeSheet(); return; }
+      Object.assign(r, data);
+      save();
+      closeSheet();
+      refreshMonth();
+      flashItem(r.id);
+      toast("Item salvo.");
+    } else {
+      const r = Object.assign({ id: newId() }, data);
+      state.months[m].push(r);
+      save();
+      refreshMonth();
+      if (addAnother) {
+        toast(`“${r.item}” adicionado.`);
+        const keepCat = f.cat;
+        ["f-item", "f-unit", "f-brand", "f-obs"].forEach(id => { document.getElementById(id).value = ""; });
+        document.getElementById("f-qty").value = "1";
+        document.getElementById("f-bought").checked = false;
+        const radio = document.querySelector(`#itemForm input[name="cat"][value="${keepCat}"]`);
+        if (radio) radio.checked = true;
+        updateItemPreview();
+        document.getElementById("f-item").focus();
+      } else {
+        closeSheet();
+        // garante que o item novo fique visível
+        if ((state.filter === "ok" && !r.bought) || (state.filter === "pend" && r.bought) || (ui.q && !fold(r.item).includes(fold(ui.q)))) {
+          state.filter = "all"; ui.q = ""; savePrefs(); renderMonth();
+        }
+        flashItem(r.id, true);
+        toast(`“${r.item}” adicionado.`);
+      }
+    }
+  }
+
+  function flashItem(id, scroll) {
+    const el = document.querySelector(`.item[data-id="${id}"]`);
+    if (!el) return;
+    if (scroll) el.scrollIntoView({ block: "center", behavior: reduceMotion() ? "auto" : "smooth" });
+    el.animate && !reduceMotion() && el.animate([{ background: "var(--brand-soft)" }, { background: "transparent" }], { duration: 1100, easing: "ease-out" });
+  }
+
+  function deleteItem(id) {
+    const m = state.month;
+    const idx = state.months[m].findIndex(r => r.id === id);
+    if (idx < 0) { closeSheet(); return; }
+    const [removed] = state.months[m].splice(idx, 1);
+    save();
+    closeSheet();
+    refreshMonth();
+    toast(`“${removed.item || "Item"}” excluído.`, {
+      action: "Desfazer",
+      onAction: () => {
+        state.months[m].splice(Math.min(idx, state.months[m].length), 0, removed);
+        save();
+        if (state.month === m && state.view === "month") { refreshMonth(); flashItem(removed.id); }
+        toast("Item restaurado.");
+      }
+    });
+  }
+
+  /* ---------------- Painel de dados ---------------- */
+  let dataNote = null, confirmReset = false;
+  function openDataSheet() {
+    dataNote = null; confirmReset = false;
+    openSheet("data", `<div class="sheet-head"><h2 id="sheetTitle">Banco de dados</h2><button type="button" class="icon-btn" data-close aria-label="Fechar">${icon("x")}</button></div>
+      <div class="sheet-body" id="dataBody"></div>`);
+    renderDataSheet();
+    setTimeout(() => { const b = $sheet.querySelector("[data-close]"); if (b) b.focus(); }, 60);
+  }
+  function renderDataSheet() {
+    const body = document.getElementById("dataBody");
+    if (!body || !state) return;
     const total = MESES.reduce((n, m) => n + state.months[m].length, 0);
-    $panel.innerHTML = `
-      <h3>Banco de dados <small>${total} itens em 12 meses${DB.updatedAt ? " · última gravação " + timeLabel(DB.updatedAt) : ""}</small></h3>
-      <p class="where">${where}</p>
-      ${DB.status === "err" ? `<p class="msg err">${esc(DB.msg)}</p>` : ""}
-      ${DB.readonly ? `<p class="msg err">O db.json não pôde ser lido, então o sistema não vai gravar por cima dele. Corrija o arquivo (ou importe um válido) e recarregue a página.</p>` : ""}
-      ${panelMsg ? `<p class="msg ok">${esc(panelMsg)}</p>` : ""}
+    const mode = {
+      server: [icon("server"), `Gravando no arquivo <b>db.json</b> da pasta do sistema, pelo servidor local. No celular, abra o mesmo endereço na mesma rede Wi-Fi. A versão anterior fica em <b>db.backup.json</b>.`],
+      file: [icon("file"), `Gravando direto no arquivo <b>${esc(DB.fileName)}</b> que você conectou. Ao reabrir o sistema, conecte o arquivo de novo.`],
+      local: [icon("browser"), `Sem servidor: os dados ficam guardados neste navegador. Para gravar em arquivo, rode <code>node server.js</code> na pasta do sistema${canPickFile ? " ou conecte um db.json abaixo" : ""}. Use <b>Exportar</b> para guardar uma cópia.`]
+    }[DB.mode];
+    body.innerHTML = `
+      <div class="data-mode"><span class="stat-ic green">${mode[0]}</span><div>
+        <p style="color:var(--ink);font-weight:600;margin-bottom:2px">${MODE_LABEL[DB.mode]} · ${total} itens em 12 meses</p>
+        <p>${mode[1]}</p>
+        ${DB.updatedAt ? `<p style="margin-top:6px">Última gravação: <b>${timeLabel(DB.updatedAt)}</b></p>` : ""}
+      </div></div>
+      ${DB.status === "err" ? `<p class="note err">${esc(DB.msg)} <button type="button" class="btn" data-dact="retry" style="margin-left:6px;min-height:34px">${icon("refresh", "sm")}Tentar de novo</button></p>` : ""}
+      ${DB.readonly ? `<p class="note err">O db.json não pôde ser lido, então nada será gravado por cima dele. Corrija o arquivo ou importe um válido e recarregue a página.</p>` : ""}
+      ${dataNote ? `<p class="note ${dataNote.err ? "err" : "ok"}">${esc(dataNote.msg)}</p>` : ""}
       <div class="data-actions">
-        <button type="button" class="btn" data-act="export">Exportar db.json</button>
-        <label class="btn ghost file-btn">Importar db.json<input type="file" id="importFile" accept=".json,application/json"></label>
-        ${fileBtns}
-        ${reset}
+        <button type="button" class="btn" data-dact="export">${icon("download")}Exportar db.json</button>
+        <label class="btn file-btn">${icon("upload")}Importar db.json<input type="file" id="importFile" accept=".json,application/json"></label>
+        ${DB.mode !== "server" && canPickFile ? `
+          <button type="button" class="btn" data-dact="open-file">${icon("file")}Abrir db.json</button>
+          <button type="button" class="btn" data-dact="new-file">${icon("file")}Salvar como db.json</button>` : ""}
+      </div>
+      <div class="danger-zone">
+        ${confirmReset
+          ? `<p style="color:var(--red-ink);font-weight:600">Apagar todas as alterações e voltar aos dados originais da planilha?</p>
+             <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" data-dact="reset-no">Cancelar</button><button type="button" class="btn btn-danger" data-dact="reset-yes">Restaurar dados</button></div>`
+          : `<p>Voltar todos os meses aos dados originais da planilha.</p>
+             <div><button type="button" class="btn btn-danger-quiet" data-dact="reset">${icon("refresh")}Restaurar dados da planilha</button></div>`}
       </div>`;
   }
 
   async function adoptData(data, origem) {
-    const months = fromDB(data); // valida antes de trocar
+    const months = fromDB(data);
     state.months = months;
     DB.readonly = false;
     DB.lastSaved = "";
-    panelMsg = `${origem}: ${MESES.reduce((n, m) => n + months[m].length, 0)} itens carregados.`;
+    dataNote = { msg: `${origem}: ${MESES.reduce((n, m) => n + months[m].length, 0)} itens carregados.` };
     render();
     await flush();
   }
-
   function exportDB() {
     const blob = new Blob([JSON.stringify(toDB(state.months), null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "db.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-    panelMsg = "db.json exportado para a pasta de downloads.";
-    renderPanel();
+    dataNote = { msg: "db.json exportado para a pasta de downloads." };
+    renderDataSheet();
   }
-
-  $panel.addEventListener("change", async e => {
+  $sheet.addEventListener("change", async e => {
     if (e.target.id !== "importFile" || !e.target.files[0]) return;
     try {
       const data = JSON.parse(await e.target.files[0].text());
       await adoptData(data, "Importado");
+      toast("Banco importado.");
     } catch (err) {
-      panelMsg = "";
-      setStatus("err", "Arquivo inválido: " + err.message);
+      dataNote = { err: true, msg: "Arquivo inválido: " + err.message + ". Nada foi alterado." };
     }
-    renderPanel();
+    renderDataSheet();
   });
-
-  $panel.addEventListener("click", async e => {
-    const act = e.target.closest("[data-act]") && e.target.closest("[data-act]").dataset.act;
-    if (!act) return;
+  $sheet.addEventListener("click", async e => {
+    const b = e.target.closest("[data-dact]");
+    if (!b) return;
+    const a = b.dataset.dact;
     try {
-      if (act === "export") exportDB();
-      else if (act === "reset") { confirmReset = true; renderPanel(); }
-      else if (act === "reset-no") { confirmReset = false; renderPanel(); }
-      else if (act === "reset-yes") {
+      if (a === "export") exportDB();
+      else if (a === "retry") { DB.lastSaved = ""; await flush(); }
+      else if (a === "reset") { confirmReset = true; renderDataSheet(); }
+      else if (a === "reset-no") { confirmReset = false; renderDataSheet(); }
+      else if (a === "reset-yes") {
         confirmReset = false;
         state.months = seed().months;
         DB.readonly = false;
-        panelMsg = "Dados da planilha restaurados.";
+        DB.lastSaved = "";
+        dataNote = { msg: "Dados da planilha restaurados." };
         render();
         await flush();
-      } else if (act === "open-file") {
+        renderDataSheet();
+      } else if (a === "open-file") {
         const [h] = await window.showOpenFilePicker({ types: [{ description: "Banco JSON", accept: { "application/json": [".json"] } }] });
         const text = await (await h.getFile()).text();
         const data = text.trim() ? JSON.parse(text) : toDB(state.months);
+        const months = fromDB(data); // valida antes de trocar o destino
         DB.mode = "file"; DB.handle = h; DB.fileName = h.name;
-        await adoptData(data, "Conectado a " + h.name);
-      } else if (act === "new-file") {
+        state.months = months; DB.lastSaved = ""; DB.readonly = false;
+        dataNote = { msg: `Conectado a ${h.name}.` };
+        render(); await flush(); renderStatus(); renderDataSheet();
+      } else if (a === "new-file") {
         const h = await window.showSaveFilePicker({ suggestedName: "db.json", types: [{ description: "Banco JSON", accept: { "application/json": [".json"] } }] });
         DB.mode = "file"; DB.handle = h; DB.fileName = h.name; DB.lastSaved = "";
-        panelMsg = "Banco salvo em " + h.name + ". As próximas alterações vão para esse arquivo.";
-        await flush();
+        dataNote = { msg: `Banco salvo em ${h.name}. As próximas alterações vão para esse arquivo.` };
+        await flush(); renderStatus(); renderDataSheet();
       }
     } catch (err) {
-      if (err && err.name === "AbortError") return; // usuário cancelou a janela de arquivo
-      setStatus("err", err.message);
+      if (err && err.name === "AbortError") return;
+      dataNote = { err: true, msg: err.message };
+      renderDataSheet();
     }
-    renderStatus();
   });
 
-  $toggle.addEventListener("click", () => {
-    $panel.hidden = !$panel.hidden;
-    $toggle.setAttribute("aria-expanded", String(!$panel.hidden));
-    panelMsg = "";
-    if (!$panel.hidden) renderPanel();
+  /* ---------------- Visão do ano ---------------- */
+  function renderYear() {
+    const sums = MESES.map(m => ({ m: m, s: summary(m) }));
+    const annual = { spent: 0, bought: 0, pending: 0, cats: [0, 0, 0, 0] };
+    sums.forEach(x => { annual.spent += x.s.spent; annual.bought += x.s.bought; annual.pending += x.s.pending; x.s.cats.forEach((v, i) => { annual.cats[i] += v; }); });
+    const active = sums.filter(x => x.s.spent > 0);
+    const maxM = active.reduce((a, x) => (!a || x.s.spent > a.s.spent ? x : a), null);
+    const minM = active.reduce((a, x) => (!a || x.s.spent < a.s.spent ? x : a), null);
+    const avg = active.length ? annual.spent / active.length : 0;
+    const maxSpent = maxM ? maxM.s.spent : 0;
+    const tm = MESES.includes(state.topMonth) ? state.topMonth : state.month;
+    const top = state.months[tm].map(r => ({ r: r, t: rowTotal(r) })).filter(x => isNum(x.t) && norm(x.r.item)).sort((a, b) => b.t - a.t).slice(0, 5);
+
+    const bars = sums.map(x => {
+      const w = maxSpent ? (x.s.spent / maxSpent) * 100 : 0;
+      const segs = x.s.cats.map((v, i) => (v > 0 ? `<i class="${CATKEY[i]}" style="width:${(v / x.s.spent) * w}%"></i>` : "")).join("");
+      return `<button type="button" class="bar-row${x.s.spent > 0 ? "" : " zero"}" data-act="goto-month" data-m="${x.m}" aria-label="Abrir ${x.m}: ${money(x.s.spent)} gastos">
+        <span class="m">${MES_ABREV(x.m)}</span><span class="track">${segs}</span><span class="v money">${money(x.s.spent)}</span></button>`;
+    }).join("");
+
+    $view.innerHTML = `
+      <div class="${monthAnim || "fade-in"}">
+      <div class="year-head"><div><h1>Resumo de 2026</h1><p>Gastos de itens comprados em todos os meses. Toque em um mês para abrir a lista.</p></div></div>
+      <div class="year-grid">
+        <div class="kpis full">
+          <div class="card kpi main"><p class="label">Total gasto no ano</p><p class="v money">${money(annual.spent)}</p><p class="s">${annual.bought} itens comprados · ${annual.pending} pendentes</p></div>
+          <div class="card kpi"><p class="label">Maior mês</p><p class="v money">${money(maxM ? maxM.s.spent : 0)}</p><p class="s">${maxM ? maxM.m : "Sem compras"}</p></div>
+          <div class="card kpi"><p class="label">Menor mês</p><p class="v money">${money(minM ? minM.s.spent : 0)}</p><p class="s">${minM ? minM.m : "Sem compras"}</p></div>
+          <div class="card kpi"><p class="label">Média mensal</p><p class="v money">${money(avg)}</p><p class="s">${active.length} ${active.length === 1 ? "mês" : "meses"} com gasto</p></div>
+        </div>
+        <section class="card panel">
+          <h2>Evolução dos gastos <small>por categoria</small></h2>
+          <div class="bars">${bars}</div>
+          <div class="legend">${CATS.map((c, i) => `<span><span class="dot ${CATKEY[i]}"></span>${c}</span>`).join("")}</div>
+        </section>
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <section class="card panel">
+            <h2>5 itens mais caros
+              <span><label class="sr-only" for="topMonth">Mês</label><select class="select" id="topMonth" style="min-height:38px">${MESES.map(m => `<option${m === tm ? " selected" : ""}>${m}</option>`).join("")}</select></span>
+            </h2>
+            ${top.length ? `<div class="tbl-wrap"><table class="top5">
+              <thead><tr><th>#</th><th>Item</th><th class="n">Preço total</th><th class="catcol">Categoria</th></tr></thead>
+              <tbody>${top.map((x, i) => { const ci = catIdx(x.r.cat); return `<tr><td class="rank">${i + 1}º</td><td>${esc(x.r.item)}</td><td class="n money">${money(x.t)}</td><td class="catcol"><span class="catname"><span class="dot ${ci >= 0 ? CATKEY[ci] : ""}"></span>${esc(ci >= 0 ? CATS[ci] : x.r.cat)}</span></td></tr>`; }).join("")}</tbody>
+            </table></div>` : `<p class="label">Nenhum item com preço em ${tm}.</p>`}
+          </section>
+          <section class="card panel">
+            <h2>Gasto por categoria</h2>
+            <div class="tbl-wrap"><table class="cats">
+              <thead><tr><th>Categoria</th><th class="n">Total</th><th class="n">% do total</th><th class="n avg">Média mensal</th></tr></thead>
+              <tbody>${CATS.map((c, i) => {
+                const share = annual.spent > 0 ? annual.cats[i] / annual.spent : null;
+                return `<tr><td><span class="catname"><span class="dot ${CATKEY[i]}"></span>${c}</span><div class="share"><i class="${CATKEY[i]}" style="width:${share ? share * 100 : 0}%"></i></div></td>
+                  <td class="n money">${money(annual.cats[i])}</td><td class="n">${pct(share)}</td><td class="n avg money">${active.length ? money(annual.cats[i] / active.length) : "—"}</td></tr>`;
+              }).join("")}</tbody>
+              <tfoot><tr><td>Total</td><td class="n money">${money(annual.spent)}</td><td class="n">${annual.spent > 0 ? "100%" : "—"}</td><td class="avg"></td></tr></tfoot>
+            </table></div>
+          </section>
+        </div>
+        <section class="card panel full">
+          <h2>Resumo mensal</h2>
+          <div class="tbl-wrap"><table class="resumo clickable">
+            <thead><tr><th>Mês</th><th class="n">Total gasto</th><th class="n">Comprados</th><th class="n">Pendentes</th>${CATS.map(c => `<th class="n">${c}</th>`).join("")}</tr></thead>
+            <tbody>${sums.map(x => `<tr data-act="goto-month" data-m="${x.m}" tabindex="0">
+              <td class="m-name">${x.m}</td><td class="n money">${money(x.s.spent)}</td>
+              <td class="n wide">${x.s.bought}</td><td class="n wide">${x.s.pending}</td>
+              <td class="m-cnt">${x.s.bought} comprados · ${x.s.pending} pendentes</td>
+              ${x.s.cats.map(v => `<td class="n wide money">${money(v)}</td>`).join("")}
+              <td class="mix">${x.s.cats.map((v, i) => (v > 0 ? `<i class="${CATKEY[i]}" style="width:${(v / x.s.spent) * 100}%"></i>` : "")).join("")}</td>
+            </tr>`).join("")}</tbody>
+            <tfoot><tr><td class="m-name">Total anual</td><td class="n money">${money(annual.spent)}</td><td class="n wide">${annual.bought}</td><td class="n wide">${annual.pending}</td>
+              <td class="m-cnt">${annual.bought} comprados · ${annual.pending} pendentes</td>${annual.cats.map(v => `<td class="n wide money">${money(v)}</td>`).join("")}<td class="mix"></td></tr></tfoot>
+          </table></div>
+        </section>
+      </div></div>`;
+    monthAnim = "";
+  }
+  $view.addEventListener("keydown", e => {
+    const tr = e.target.closest && e.target.closest('tr[data-act="goto-month"]');
+    if (tr && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); go("month", tr.dataset.m); }
   });
 
   /* ---------------- Início ---------------- */
+  const ui = { q: "", lastCat: null };
+
   async function init() {
     const prefs = loadPrefs();
-    let months = null;
-    let migrated = false;
-
+    let months = null, migrated = false;
     const srv = await askServer();
     if (srv) {
       DB.mode = "server";
       if (srv.data) {
         try { months = fromDB(srv.data); DB.updatedAt = srv.data.atualizadoEm || null; }
-        catch (e) { DB.readonly = true; setStatus("err", "db.json inválido: " + e.message); }
+        catch (e) { DB.readonly = true; DB.status = "err"; DB.msg = "db.json inválido: " + e.message; }
       }
     } else {
       try {
         const raw = localStorage.getItem(LOCAL_KEY);
         if (raw) { const d = JSON.parse(raw); months = fromDB(d); DB.updatedAt = d.atualizadoEm || null; }
-      } catch (e) { /* começa do zero */ }
-      if (!months) { // versão anterior do sistema guardava tudo junto
+      } catch (e) { /* começa com os dados da planilha */ }
+      if (!months) {
         try { const old = JSON.parse(localStorage.getItem(STORE_KEY)); if (old && old.months) { months = old.months; migrated = true; } } catch (e) { /* ignora */ }
       }
     }
-
     const fresh = !months;
+    const nowIdx = new Date().getFullYear() === 2026 ? new Date().getMonth() : 0;
+    // preferências da versão anterior: view era "dash" ou o nome do mês
+    const legacyMonth = MESES.includes(prefs.view) ? prefs.view : null;
     state = {
       months: months || seed().months,
-      view: prefs.view === "dash" || MESES.includes(prefs.view) ? prefs.view : "dash",
-      topMonth: MESES.includes(prefs.topMonth) ? prefs.topMonth : "Setembro",
-      filter: ["all", "pend", "ok"].includes(prefs.filter) ? prefs.filter : "all"
+      view: prefs.view === "year" || prefs.view === "dash" ? "year" : "month",
+      month: MESES.includes(prefs.month) ? prefs.month : legacyMonth || MESES[nowIdx],
+      topMonth: MESES.includes(prefs.topMonth) ? prefs.topMonth : MESES[nowIdx],
+      filter: ["all", "pend", "ok"].includes(prefs.filter) ? prefs.filter : "all",
+      sort: ["list", "pending", "name", "value"].includes(prefs.sort) ? prefs.sort : "list",
+      group: prefs.group !== false
     };
+    if (prefs.view === "dash") state.view = "month"; // a tela principal agora é o mês
     DB.lastSaved = fresh || migrated ? "" : JSON.stringify(state.months);
     renderStatus();
     render();
-    if (fresh && !DB.readonly) flush(); // cria o db.json com os dados da planilha
+    if ((fresh || migrated) && !DB.readonly) flush();
   }
 
   init();

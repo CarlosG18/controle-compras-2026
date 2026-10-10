@@ -62,3 +62,10 @@ No botão **Banco de dados** dá para:
 
 Categorias: `Limpeza`, `Grosso`, `Salgado/Frios`, `Frutas e Verduras`.
 Preço total, valor do mês passado, economia e todo o dashboard são calculados, não ficam gravados.
+
+## Deploy na Vercel
+
+O projeto sobe na Vercel como site estático, sem configuração (nenhum build, `index.html` na raiz).
+Na Vercel não existe disco para gravar, então lá o sistema roda no modo **navegador**: os dados ficam
+no aparelho de quem usa, com Exportar/Importar `db.json` no botão **Banco de dados**.
+A gravação automática no `db.json` acontece rodando localmente com `node server.js`.
