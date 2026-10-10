@@ -810,8 +810,9 @@
             </div>
             <div class="field" id="fw-unit">
               <label for="f-unit">Preço unitário <span class="opt">(opcional)</span></label>
-              <div class="money-in"><span>R$</span><input id="f-unit" name="unit" inputmode="decimal" autocomplete="off" placeholder="0,00" value="${isNum(d.unit) ? numIn(d.unit) : ""}" aria-describedby="e-unit"></div>
+              <div class="money-in"><span>R$</span><input id="f-unit" name="unit" inputmode="numeric" autocomplete="off" placeholder="0,00" maxlength="12" value="${isNum(d.unit) ? maskMoney(Math.round(d.unit * 100)) : ""}" aria-describedby="e-unit h-unit"></div>
               <p class="err" id="e-unit">${icon("alert", "sm")}<span></span></p>
+              <p class="hint" id="h-unit">Digite só os números: 499 vira 4,99</p>
             </div>
           </div>
           <div class="total-line"><span>Preço total</span><b class="money" id="f-total">—</b></div>
@@ -833,6 +834,14 @@
     renderItemFoot();
     updateItemPreview();
     const f = document.getElementById("itemForm");
+    // máscara de dinheiro: os dígitos entram pela direita (499 → 4,99)
+    const unitIn = document.getElementById("f-unit");
+    unitIn.addEventListener("input", () => {
+      const digits = unitIn.value.replace(/\D/g, "").replace(/^0+/, "").slice(0, 9);
+      unitIn.value = digits ? maskMoney(Number(digits)) : "";
+      const end = unitIn.value.length;
+      try { unitIn.setSelectionRange(end, end); } catch (err) { /* ignora */ }
+    });
     f.addEventListener("input", e => { clearFieldError(e.target); updateItemPreview(); });
     f.addEventListener("change", updateItemPreview);
     f.addEventListener("submit", e => { e.preventDefault(); submitItem(e.submitter && e.submitter.dataset.more === "1"); });
@@ -876,6 +885,11 @@
     if (a === "ask-del") { editing.confirmDelete = true; renderItemFoot(); }
     else if (a === "cancel-del") { editing.confirmDelete = false; renderItemFoot(); }
     else if (a === "del") deleteItem(editing.id);
+  }
+
+  // centavos (inteiro) → "1.234,56"
+  function maskMoney(cents) {
+    return (cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function readItemForm() {
