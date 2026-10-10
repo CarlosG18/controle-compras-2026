@@ -1,0 +1,3982 @@
+{
+  "app": "controle-compras",
+  "versao": 1,
+  "ano": 2026,
+  "atualizadoEm": "2026-10-10T03:48:07.841Z",
+  "meses": {
+    "Janeiro": [
+      {
+        "id": "uozer9qg",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 12,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z8n7k5wz",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3ww8lhul",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "8dthqycf",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "gdcfxfxv",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ghqsqlo4",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "d4bm2v3p",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "mi2u0rnp",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "npezj2s4",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "gphi3w76",
+        "categoria": "Limpeza",
+        "item": "Rodo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xknj5tf6",
+        "categoria": "Limpeza",
+        "item": "Escova de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "b97guydv",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "s7ryhccc",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "krgd6mt2",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "wymcgepd",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "cb13mjyn",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "qyqmrcff",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dt3gq7al",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "o99dyil2",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "kfxm7jni",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "r4twuy9z",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "oodpkjgv",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "nilwguxw",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "uvt9c0lt",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9pxf58bj",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "svbi2gi6",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "eeb50hqx",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rg1abk8k",
+        "categoria": "Frutas e Verduras",
+        "item": "Couve (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "m7r32cab",
+        "categoria": "Frutas e Verduras",
+        "item": "Abacaxi (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Fevereiro": [
+      {
+        "id": "h8u64i49",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "yya0op2d",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "21d9ydia",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "50ah3pq1",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "c8jo96x0",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "p8glh9de",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ljs7vslq",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "4xy2ilk9",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3uu7gyo6",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9y4s6x1h",
+        "categoria": "Limpeza",
+        "item": "Rodo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z6wqeoz7",
+        "categoria": "Limpeza",
+        "item": "Escova de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "yav1w8ir",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "unh0jfwh",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7s4jw3l3",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "go8qb6di",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vzw0h4xo",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "qhvbj4ie",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "hfg8zp84",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "g2tzfsbm",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "poxncoxh",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "sywduedc",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "4zrdfjzm",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "uvcdiwbx",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "myiclqua",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "tyocgtyw",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "l6ajn2i4",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "osmdk6rs",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "umvmb2zb",
+        "categoria": "Frutas e Verduras",
+        "item": "Couve (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ivmmf3k8",
+        "categoria": "Frutas e Verduras",
+        "item": "Abacaxi (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Março": [
+      {
+        "id": "5h5pvxy1",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "wfn4fihm",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "pxpcprvn",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "y3gly7c2",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "28isr83p",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2clzgo7y",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "buf9addf",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "20j5e0jz",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "91z3pgrl",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "0dyogy16",
+        "categoria": "Limpeza",
+        "item": "Rodo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "27ci1lgj",
+        "categoria": "Limpeza",
+        "item": "Escova de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "syq4byax",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "qm9etf5t",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9vo7jf6h",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "oxvqptlh",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "sff50dtg",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "i4jamkhm",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "g1rw6zwd",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "axfmudd6",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "eun9z40j",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "miwy1gxg",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lu5iennj",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "d8ialrmt",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "u9cbjbn0",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "1ajjxlzw",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "gerho3ft",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zlsw5bin",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "wje3jjr7",
+        "categoria": "Frutas e Verduras",
+        "item": "Couve (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "6byu2iqp",
+        "categoria": "Frutas e Verduras",
+        "item": "Abacaxi (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Abril": [
+      {
+        "id": "yoslg1ih",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": true,
+        "precoUnit": 1.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "6ge0ukty",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 16.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dxna7r3y",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 2.99,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "hag63biw",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 2.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5fadwp7n",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 1.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vhvniy4e",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 0.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "fdcwz4v4",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 8.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3bizn8xu",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 13.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "adalhtpv",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 3.2,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "cijhz3g7",
+        "categoria": "Limpeza",
+        "item": "Rodo",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 7,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "gh9kgzmk",
+        "categoria": "Limpeza",
+        "item": "Escova de dente",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 3.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "jicwl68n",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 2,
+        "comprado": true,
+        "precoUnit": 3.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "l0iq3z6t",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": true,
+        "precoUnit": 1.05,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "0h6ncaxf",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 5.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "tn9uin4h",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 6.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5rlamx86",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 5.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "y09iqzy8",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 5,
+        "comprado": true,
+        "precoUnit": 1.25,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "52o07fy2",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 5.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "joozlb66",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 1.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "p5qvktb1",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 15,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "y1uj0k6t",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 5.39,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "087w2ckd",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 7.72,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ve229s1b",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 4.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "1xy40cbl",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 8.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9y68gu4j",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 3.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zpi8ejyh",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 6.79,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zpbvnplb",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 4.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3fz016l2",
+        "categoria": "Frutas e Verduras",
+        "item": "Couve (opcional)",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 3,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "56vwq7sq",
+        "categoria": "Frutas e Verduras",
+        "item": "Abacaxi (opcional)",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 4,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Maio": [
+      {
+        "id": "wquj2tws",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dgx9nogl",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "asli0qdb",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2izk01zw",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xlw79zrr",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ryazznpm",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rvwj0qr9",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2fkif0kf",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "kflli2vi",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "v87skm5t",
+        "categoria": "Limpeza",
+        "item": "Rodo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lovp02ah",
+        "categoria": "Limpeza",
+        "item": "Escova de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lwym0swn",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "cii5gwno",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dkg0cwb3",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "giq5e0m7",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ewakm2ui",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "exvu4t32",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "64xsl0vl",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3l43ebv1",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "v5mhhx4p",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "tsozt13g",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "x4ah6o5b",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "b0igopnz",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xo2ldmk3",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "69axn63a",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ihvs6uhi",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3uf39sqo",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ozjlpzxe",
+        "categoria": "Frutas e Verduras",
+        "item": "Couve (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5035jocn",
+        "categoria": "Frutas e Verduras",
+        "item": "Abacaxi (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Junho": [
+      {
+        "id": "w1dp3q1c",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 0.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "veb60x8n",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 17.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "poz0ytgl",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 2.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2779ngh7",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 2.19,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "q9dqhs4z",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "yh53nu9c",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 0.85,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ss5na605",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "nsbnt9xz",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 8.79,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "87m80gjq",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 3.2,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xyjdw97j",
+        "categoria": "Limpeza",
+        "item": "prostobarba",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 6.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "hih7bwr1",
+        "categoria": "Limpeza",
+        "item": "Amaciante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 2,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rjsesciv",
+        "categoria": "Limpeza",
+        "item": "xampu",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 12.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ngnsa8wh",
+        "categoria": "Limpeza",
+        "item": "condicionador",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 15.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zhkhkua1",
+        "categoria": "Limpeza",
+        "item": "creme",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 11.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vmxqk8yy",
+        "categoria": "Grosso",
+        "item": "vinho",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 14.5,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ev8eggol",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 3.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dzzc9n1n",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 1.14,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2xadiyyc",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 6,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "u2ombeli",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 7,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "th6ze1tv",
+        "categoria": "Grosso",
+        "item": "Bolacha salgada",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "c1xqd18u",
+        "categoria": "Grosso",
+        "item": "Rosquinha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7643mvbj",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 6,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "t98h353j",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 8.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "unijooke",
+        "categoria": "Grosso",
+        "item": "leite condensado",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 4.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3lawf2an",
+        "categoria": "Grosso",
+        "item": "creme de leite",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": 1.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "nw197wzp",
+        "categoria": "Grosso",
+        "item": "Milho e ervilha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3.19,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "c5sv4ko3",
+        "categoria": "Grosso",
+        "item": "Leite em caixa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xuu3f37c",
+        "categoria": "Grosso",
+        "item": "feijão",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 6.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "s0452eba",
+        "categoria": "Grosso",
+        "item": "sardinha",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "g1dvfo1l",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 6.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "y0yrmcu5",
+        "categoria": "Grosso",
+        "item": "milho de pipoca",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "t6g2iz4e",
+        "categoria": "Grosso",
+        "item": "farinha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2oi43hom",
+        "categoria": "Grosso",
+        "item": "Sal",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.95,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "80vu1s9c",
+        "categoria": "Grosso",
+        "item": "fardo de refri",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 17.4,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "6zjei499",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 1.25,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2yav7fn7",
+        "categoria": "Grosso",
+        "item": "Margarina",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 7,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "v897cp5h",
+        "categoria": "Grosso",
+        "item": "macarrão",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 1.85,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vppaw5u1",
+        "categoria": "Grosso",
+        "item": "Açúcar",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z0sm3etc",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 15.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "w4up01m6",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 7,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5gtw5q08",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 8.15,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "sc3cpham",
+        "categoria": "Salgado/Frios",
+        "item": "presunto",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3.87,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7jtkweb3",
+        "categoria": "Salgado/Frios",
+        "item": "polpa de frutas",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 9.48,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "es0byx7r",
+        "categoria": "Salgado/Frios",
+        "item": "frango a passarinho",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 8.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "wwdlkw14",
+        "categoria": "Salgado/Frios",
+        "item": "salsicha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 11.6,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "x2jy5fp1",
+        "categoria": "Salgado/Frios",
+        "item": "Pão de Alho",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "m8wftlx4",
+        "categoria": "Salgado/Frios",
+        "item": "Carne de Hamburger",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "uohp7c0e",
+        "categoria": "Salgado/Frios",
+        "item": "Pizza",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "470aei4j",
+        "categoria": "Frutas e Verduras",
+        "item": "alho",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "kuezkj4f",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "n47qwp0f",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "gtjw0c2n",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 9.79,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "p98kc13k",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7oqvin5s",
+        "categoria": "Frutas e Verduras",
+        "item": "batata doce",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "q7jl1yph",
+        "categoria": "Frutas e Verduras",
+        "item": "cenoura",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z3ughov7",
+        "categoria": "Frutas e Verduras",
+        "item": "coentro",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.15,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Julho": [
+      {
+        "id": "0jkyo9ml",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 1,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5lxpjrut",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.95,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "bgg46esu",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.45,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5na2tb21",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xs4by0o5",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 2.8,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "96yhafzv",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3.75,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "bz1pgajd",
+        "categoria": "Grosso",
+        "item": "macarrão",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 2.39,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "c2r9y5rj",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "42lg3scn",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 6.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "j4roxzyy",
+        "categoria": "Grosso",
+        "item": "milho de pipoca",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 2.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dnw67ga3",
+        "categoria": "Grosso",
+        "item": "queijo ralado",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4.79,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "hq0a41ef",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 6.19,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "oc1yaj3o",
+        "categoria": "Grosso",
+        "item": "Rosquinha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rg97kob8",
+        "categoria": "Grosso",
+        "item": "Bolacha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xvt55jy6",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4.85,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "yvxiyx7l",
+        "categoria": "Grosso",
+        "item": "clube social",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.55,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5zo9mcmn",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 10,
+        "comprado": false,
+        "precoUnit": 1,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "0t1ptt2e",
+        "categoria": "Grosso",
+        "item": "Nescau em pó",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zrl79ojr",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 6.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "fpm0hi6j",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "m8pf0z36",
+        "categoria": "Grosso",
+        "item": "Biscoito",
+        "qtd": 6,
+        "comprado": true,
+        "precoUnit": 0.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3hb3jrh1",
+        "categoria": "Grosso",
+        "item": "manteiga",
+        "qtd": 2,
+        "comprado": true,
+        "precoUnit": 2.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2otmn97m",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 7,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rnqxh3tb",
+        "categoria": "Salgado/Frios",
+        "item": "salsicha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 11.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9dq9l2t0",
+        "categoria": "Salgado/Frios",
+        "item": "polpa de frutas",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 11.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "qf291kan",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "c8pabn84",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 4.4,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "w6j92i0g",
+        "categoria": "Grosso",
+        "item": "leite",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 6.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7s0j7j50",
+        "categoria": "Frutas e Verduras",
+        "item": "maçã",
+        "qtd": 1,
+        "comprado": true,
+        "precoUnit": 9.43,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "1qaf83xi",
+        "categoria": "Frutas e Verduras",
+        "item": "cenoura",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 8,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "tsprsuen",
+        "categoria": "Frutas e Verduras",
+        "item": "Alface",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rk8vf0e5",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Agosto": [
+      {
+        "id": "y0m78eod",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 1.85,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9xsvp8bp",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 8.15,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vbs8sp5q",
+        "categoria": "Limpeza",
+        "item": "Limpa aí feira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 19,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ofg6k3or",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 16.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2c7lkky4",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 2.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "53dfk7iy",
+        "categoria": "Limpeza",
+        "item": "creme de cabelo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2tvhxsu5",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.85,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "wq64j837",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zlbmqx2d",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 0.75,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lec5qgra",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "hso03orv",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 3.4,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "yuvkaw26",
+        "categoria": "Limpeza",
+        "item": "Amaciante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 6,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "8lwgj6om",
+        "categoria": "Limpeza",
+        "item": "Prestobarba",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.79,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xmfsrg1y",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 3.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9zyvoyjy",
+        "categoria": "Grosso",
+        "item": "Macarrão",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 1.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "h2fbvxw5",
+        "categoria": "Grosso",
+        "item": "Coloral",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 1.19,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3p18hkp0",
+        "categoria": "Grosso",
+        "item": "Sazon",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 5.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "kghkqgpg",
+        "categoria": "Grosso",
+        "item": "Feijão",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 6.39,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "x39frz42",
+        "categoria": "Grosso",
+        "item": "Creme de leite",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 1.65,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ba4paa0s",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": 1.05,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ts77jpfk",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.79,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "d6ahnpz4",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "mg4pvr3y",
+        "categoria": "Salgado/Frios",
+        "item": "Polpa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 2.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rkdw7bo2",
+        "categoria": "Grosso",
+        "item": "Rosquinha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "h4z52tpa",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 12,
+        "comprado": false,
+        "precoUnit": 0.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "78vsnggv",
+        "categoria": "Grosso",
+        "item": "Tempero completo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "kin9vedl",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 4.97,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lmib7qe9",
+        "categoria": "Grosso",
+        "item": "Coca",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4.5,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zdf6dxdn",
+        "categoria": "Salgado/Frios",
+        "item": "Leite",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 6.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ttxm540i",
+        "categoria": "Salgado/Frios",
+        "item": "salsicha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 14.6,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "1jhdqa2u",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 7.22,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2e3zmsds",
+        "categoria": "Salgado/Frios",
+        "item": "Polpa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 13,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7z1bealb",
+        "categoria": "Salgado/Frios",
+        "item": "Torta",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 17,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zt87gw2z",
+        "categoria": "Salgado/Frios",
+        "item": "Pão de alho",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 11.5,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9yowt6ux",
+        "categoria": "Salgado/Frios",
+        "item": "Batata palha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 9.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "fph04vmk",
+        "categoria": "Frutas e Verduras",
+        "item": "Sorvete",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 14.9,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lj4gyiql",
+        "categoria": "Salgado/Frios",
+        "item": "Biscoito",
+        "qtd": 12,
+        "comprado": false,
+        "precoUnit": 0.83,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "peqqygxc",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 9.97,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "c1n15nx5",
+        "categoria": "Frutas e Verduras",
+        "item": "Alface",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 2,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "bcmln3mq",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lwkrt54y",
+        "categoria": "Frutas e Verduras",
+        "item": "Uva",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 20,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "8mramwoy",
+        "categoria": "Frutas e Verduras",
+        "item": "Iogurte",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 3.79,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Setembro": [
+      {
+        "id": "vusechrr",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 1.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "j4gq0lzn",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 17.99,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "alcw2t3w",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 2.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "88i3zz5n",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.95,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2t7y17yo",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.35,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "235z1w12",
+        "categoria": "Limpeza",
+        "item": "Saco de lixo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4.59,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "bkwfj89c",
+        "categoria": "Limpeza",
+        "item": "Formigas",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 9.98,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rj9cvkwx",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 9.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "wilpsojf",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 10.99,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7d157txl",
+        "categoria": "Grosso",
+        "item": "Macarrão",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 2.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "48abrg8k",
+        "categoria": "Grosso",
+        "item": "Feijão",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 6.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lhej8uf5",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 3.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ilr0e80f",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 1.15,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lb2ir8n8",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 3.49,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "f9f706up",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4.85,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dp0pzcoo",
+        "categoria": "Grosso",
+        "item": "Rosquinha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 4,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "w9kovziu",
+        "categoria": "Grosso",
+        "item": "Nescau",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.69,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "y7vcycl6",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 12,
+        "comprado": false,
+        "precoUnit": 1.09,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "b6uzqrc9",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 4.98,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "1412nq13",
+        "categoria": "Grosso",
+        "item": "Manteiga",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": 2.15,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z8gthsnr",
+        "categoria": "Grosso",
+        "item": "Óleo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 7.89,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "3qanhgxf",
+        "categoria": "Salgado/Frios",
+        "item": "Salsicha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 14.48,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "p6bl9etd",
+        "categoria": "Salgado/Frios",
+        "item": "Iogurte",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "pbnttpgk",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 14,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5mg8jy7g",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 5.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "nlrcyizv",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 7.37,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "yw75pr0x",
+        "categoria": "Salgado/Frios",
+        "item": "Linguiça",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 16,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "acn7bm2t",
+        "categoria": "Salgado/Frios",
+        "item": "Frango promoção",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 14.29,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "j8tmd38g",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 0.93,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7v7ukwfg",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": 1.2,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7nqhcvts",
+        "categoria": "Salgado/Frios",
+        "item": "Refrigerante",
+        "qtd": 8,
+        "comprado": false,
+        "precoUnit": 1.45,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "v1th4bxh",
+        "categoria": "Salgado/Frios",
+        "item": "Biscoito",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 2,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "yjn5aj3y",
+        "categoria": "Salgado/Frios",
+        "item": "Tortinha",
+        "qtd": 3,
+        "comprado": false,
+        "precoUnit": 2.49,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Outubro": [
+      {
+        "id": "6dget1o3",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "cih0zro2",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dkoi4uw5",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rvcrtwtu",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "9d21gorp",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "aywbe3c7",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lzc51705",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7fl6x709",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "jwi2rdie",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "wzoeq7p1",
+        "categoria": "Limpeza",
+        "item": "Rodo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "igf5s4t4",
+        "categoria": "Limpeza",
+        "item": "Escova de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "iwaj6un0",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "hr4m4m5p",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "nr1vptip",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "qtymgdrt",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "c4gdtuae",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "6gypa9zl",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "u0decgkx",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "d0j5zxrk",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "xg5ktq93",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "nt59xmre",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "v5n622w9",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ccrdjo26",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "7pgyqgho",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ky6teu4f",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "1jusksll",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "t02cej02",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "0cl3cpc9",
+        "categoria": "Frutas e Verduras",
+        "item": "Couve (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "gvq4vd1n",
+        "categoria": "Frutas e Verduras",
+        "item": "Abacaxi (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Novembro": [
+      {
+        "id": "edtxr1kr",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "e86ws5fd",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "68sbew3t",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "k5k1is1u",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "m9lgd34n",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ba6rdxt8",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "x1b6h6wc",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "dot8q92z",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "gd6z1h6t",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "24c67f1o",
+        "categoria": "Limpeza",
+        "item": "Rodo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "lxdqmxn1",
+        "categoria": "Limpeza",
+        "item": "Escova de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "zws5doo8",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "rhype0e6",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "4wmpt5zq",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "jw5wx730",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "5ll8z5rc",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "slxnd055",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "0k7fx96v",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z6a3lish",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "wf0ga2qn",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "8x8gzivb",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vqddhb8h",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "p1mlf3y6",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "n7ewxwa0",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "yd8lvva7",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "e83q73i1",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z83ppf6b",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vgchu1q0",
+        "categoria": "Frutas e Verduras",
+        "item": "Couve (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vuhe7b2z",
+        "categoria": "Frutas e Verduras",
+        "item": "Abacaxi (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      }
+    ],
+    "Dezembro": [
+      {
+        "id": "20xvgkgr",
+        "categoria": "Limpeza",
+        "item": "Sabonete",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "4rptf1rj",
+        "categoria": "Limpeza",
+        "item": "Desodorante",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "fy56kfyk",
+        "categoria": "Limpeza",
+        "item": "Pasta de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z1w0o764",
+        "categoria": "Limpeza",
+        "item": "Água sanitária",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "d4jzbar6",
+        "categoria": "Limpeza",
+        "item": "Limpol",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "i1jvhw8z",
+        "categoria": "Limpeza",
+        "item": "Bucha",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "1hcjqzgc",
+        "categoria": "Limpeza",
+        "item": "Absorvente Always",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "o1txu4vo",
+        "categoria": "Limpeza",
+        "item": "Sabão líquido refil",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "oyjkfu2b",
+        "categoria": "Limpeza",
+        "item": "Papel higiênico",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "c8r7xcd9",
+        "categoria": "Limpeza",
+        "item": "Rodo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "j4le82g9",
+        "categoria": "Limpeza",
+        "item": "Escova de dente",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "z0ie5lwj",
+        "categoria": "Grosso",
+        "item": "Arroz",
+        "qtd": 2,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "29887jxo",
+        "categoria": "Grosso",
+        "item": "Cuscuz",
+        "qtd": 4,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "jo0q0dmy",
+        "categoria": "Grosso",
+        "item": "Bolacha cream cracker",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ngq70d1c",
+        "categoria": "Grosso",
+        "item": "Biscoito Maria",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "k1jv1gc8",
+        "categoria": "Grosso",
+        "item": "Goma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2x8fvdi7",
+        "categoria": "Grosso",
+        "item": "Nescau (anotar ml: ___)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "uo5ntth4",
+        "categoria": "Grosso",
+        "item": "Pão de forma",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "i31kws20",
+        "categoria": "Grosso",
+        "item": "Molho de tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "b4nfnr4i",
+        "categoria": "Salgado/Frios",
+        "item": "Ovo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "d6799nf2",
+        "categoria": "Salgado/Frios",
+        "item": "Mortadela",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "d78wy0rf",
+        "categoria": "Salgado/Frios",
+        "item": "Queijo",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "vp81xnrq",
+        "categoria": "Frutas e Verduras",
+        "item": "Cebola",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "pwccu3qs",
+        "categoria": "Frutas e Verduras",
+        "item": "Tomate",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "u9n9h7mj",
+        "categoria": "Frutas e Verduras",
+        "item": "Macaxeira",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "0u2ruizo",
+        "categoria": "Frutas e Verduras",
+        "item": "Batata inglesa",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "o4cqe41z",
+        "categoria": "Frutas e Verduras",
+        "item": "Banana",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "uqx9pp0a",
+        "categoria": "Frutas e Verduras",
+        "item": "Couve (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2cutigwz",
+        "categoria": "Frutas e Verduras",
+        "item": "Abacaxi (opcional)",
+        "qtd": 1,
+        "comprado": false,
+        "precoUnit": null,
+        "marca": "",
+        "observacoes": ""
+      }
+    ]
+  }
+}
