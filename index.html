@@ -12,8 +12,12 @@
 <header class="appbar">
   <div class="appbar-in">
     <div class="brand">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-name">Controle de Compras <span>2026</span></span>
+      <button type="button" class="mod-btn" id="modBtn" aria-haspopup="true" aria-expanded="false" aria-controls="modPop">
+        <span class="brand-mark" id="modMark" aria-hidden="true"></span>
+        <span class="brand-name" id="modName">Controle de Compras</span>
+        <svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="mod-pop" id="modPop" role="menu" aria-label="Escolher área" hidden></div>
     </div>
     <nav class="viewtabs" aria-label="Visão">
       <button type="button" data-goto="month" aria-pressed="true">Mês</button>

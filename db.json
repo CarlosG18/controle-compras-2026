@@ -2,7 +2,7 @@
   "app": "controle-compras",
   "versao": 1,
   "ano": 2026,
-  "atualizadoEm": "2026-10-10T03:48:07.841Z",
+  "atualizadoEm": "2026-10-10T14:58:51.683Z",
   "meses": {
     "Janeiro": [
       {
@@ -3978,5 +3978,255 @@
         "observacoes": ""
       }
     ]
+  },
+  "faxina": {
+    "pessoas": [
+      "Gabriel",
+      "Letícia"
+    ],
+    "tarefasFixas": [
+      {
+        "id": "6dj7yixy",
+        "nome": "Varrer casa",
+        "peso": 3,
+        "juntos": false
+      },
+      {
+        "id": "yayiebt3",
+        "nome": "Passar pano",
+        "peso": 3,
+        "juntos": false
+      },
+      {
+        "id": "z9r2uqk6",
+        "nome": "Lavar banheiro",
+        "peso": 3,
+        "juntos": false
+      },
+      {
+        "id": "dsz569p0",
+        "nome": "Lavar os panos de chão",
+        "peso": 3,
+        "juntos": false
+      },
+      {
+        "id": "75h0zd6m",
+        "nome": "Lavar roupa e toalha",
+        "peso": 3,
+        "juntos": false
+      },
+      {
+        "id": "id8w3ygw",
+        "nome": "Limpar airfryer",
+        "peso": 2,
+        "juntos": false
+      },
+      {
+        "id": "f93oszq7",
+        "nome": "Guardar feira",
+        "peso": 2,
+        "juntos": false
+      },
+      {
+        "id": "80t8mxfj",
+        "nome": "Lavar louça",
+        "peso": 2,
+        "juntos": false
+      },
+      {
+        "id": "9hugbn9i",
+        "nome": "Fazer feijão",
+        "peso": 2,
+        "juntos": false
+      },
+      {
+        "id": "32lycybr",
+        "nome": "Limpar fogão",
+        "peso": 1,
+        "juntos": false
+      },
+      {
+        "id": "s0wynd87",
+        "nome": "Juntar lixo",
+        "peso": 1,
+        "juntos": false
+      },
+      {
+        "id": "uk0b1buj",
+        "nome": "Limpar pia",
+        "peso": 1,
+        "juntos": false
+      },
+      {
+        "id": "asbsl4yl",
+        "nome": "Mistura da semana",
+        "peso": 1,
+        "juntos": false
+      },
+      {
+        "id": "n38bc40f",
+        "nome": "Guardar louça",
+        "peso": 1,
+        "juntos": false
+      },
+      {
+        "id": "wcbpuy2h",
+        "nome": "Pegar coisas pela casa",
+        "peso": 1,
+        "juntos": false
+      },
+      {
+        "id": "toqx20ak",
+        "nome": "Lavar roupa",
+        "peso": 2,
+        "juntos": true
+      },
+      {
+        "id": "zd0db3j9",
+        "nome": "Organizar guarda-roupa",
+        "peso": 1,
+        "juntos": true
+      }
+    ],
+    "semanas": {
+      "2026-10-05": [
+        {
+          "id": "r12exajd",
+          "fixaId": "6dj7yixy",
+          "nome": "Varrer casa",
+          "peso": 3,
+          "responsavel": "Gabriel",
+          "status": "pendente"
+        },
+        {
+          "id": "2t62b0jy",
+          "fixaId": "yayiebt3",
+          "nome": "Passar pano",
+          "peso": 3,
+          "responsavel": "Gabriel",
+          "status": "naofez"
+        },
+        {
+          "id": "8tmiumq5",
+          "fixaId": "z9r2uqk6",
+          "nome": "Lavar banheiro",
+          "peso": 3,
+          "responsavel": "Letícia",
+          "status": "pendente"
+        },
+        {
+          "id": "g4fwvukk",
+          "fixaId": "dsz569p0",
+          "nome": "Lavar os panos de chão",
+          "peso": 3,
+          "responsavel": "Gabriel",
+          "status": "naofez"
+        },
+        {
+          "id": "1kmnu376",
+          "fixaId": "75h0zd6m",
+          "nome": "Lavar roupa e toalha",
+          "peso": 3,
+          "responsavel": "Letícia",
+          "status": "pendente"
+        },
+        {
+          "id": "8egg1raf",
+          "fixaId": "id8w3ygw",
+          "nome": "Limpar airfryer",
+          "peso": 2,
+          "responsavel": "Gabriel",
+          "status": "naofez"
+        },
+        {
+          "id": "1bymzc82",
+          "fixaId": "f93oszq7",
+          "nome": "Guardar feira",
+          "peso": 2,
+          "responsavel": "",
+          "status": "pendente"
+        },
+        {
+          "id": "ahycrg7n",
+          "fixaId": "80t8mxfj",
+          "nome": "Lavar louça",
+          "peso": 2,
+          "responsavel": "Letícia",
+          "status": "pendente"
+        },
+        {
+          "id": "73dlxtvi",
+          "fixaId": "9hugbn9i",
+          "nome": "Fazer feijão",
+          "peso": 2,
+          "responsavel": "Letícia",
+          "status": "pendente"
+        },
+        {
+          "id": "n1cpzqsl",
+          "fixaId": "32lycybr",
+          "nome": "Limpar fogão",
+          "peso": 1,
+          "responsavel": "Letícia",
+          "status": "pendente"
+        },
+        {
+          "id": "iixvo0uy",
+          "fixaId": "s0wynd87",
+          "nome": "Juntar lixo",
+          "peso": 1,
+          "responsavel": "Gabriel",
+          "status": "pendente"
+        },
+        {
+          "id": "cyrda5ha",
+          "fixaId": "uk0b1buj",
+          "nome": "Limpar pia",
+          "peso": 1,
+          "responsavel": "",
+          "status": "pendente"
+        },
+        {
+          "id": "f5etc8dd",
+          "fixaId": "asbsl4yl",
+          "nome": "Mistura da semana",
+          "peso": 1,
+          "responsavel": "Gabriel",
+          "status": "pendente"
+        },
+        {
+          "id": "wsamp8y3",
+          "fixaId": "n38bc40f",
+          "nome": "Guardar louça",
+          "peso": 1,
+          "responsavel": "Letícia",
+          "status": "pendente"
+        },
+        {
+          "id": "3msce41w",
+          "fixaId": "wcbpuy2h",
+          "nome": "Pegar coisas pela casa",
+          "peso": 1,
+          "responsavel": "Gabriel",
+          "status": "pendente"
+        },
+        {
+          "id": "pzeklhhs",
+          "fixaId": "toqx20ak",
+          "nome": "Lavar roupa",
+          "peso": 2,
+          "responsavel": "Juntos",
+          "status": "pendente"
+        },
+        {
+          "id": "ql5730vl",
+          "fixaId": "zd0db3j9",
+          "nome": "Organizar guarda-roupa",
+          "peso": 1,
+          "responsavel": "Juntos",
+          "status": "pendente"
+        }
+      ]
+    }
   }
 }

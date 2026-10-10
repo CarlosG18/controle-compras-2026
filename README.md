@@ -63,6 +63,33 @@ No botão **Banco de dados** dá para:
 Categorias: `Limpeza`, `Grosso`, `Salgado/Frios`, `Frutas e Verduras`.
 Preço total, valor do mês passado, economia e todo o dashboard são calculados, não ficam gravados.
 
+## Divisão de Faxina
+
+No topo, toque no nome do sistema para trocar entre **Controle de Compras** e **Divisão de Faxina**.
+
+- Cada semana (segunda a domingo) tem sua lista. Peso: **pesada = 3 pts**, **média = 2 pts**, **leve = 1 pt**.
+- Cada tarefa é de uma pessoa (Gabriel ou Letícia), **Juntos** ou sem responsável.
+- Situação: pendente, feita ou **não fez**. Só as tarefas feitas somam pontos; "não fez" fica registrado.
+- **Sugerir divisão** distribui as tarefas pendentes deixando os pontos o mais parecidos possível.
+- Tarefas marcadas como "Repetir toda semana" são copiadas quando uma semana nova é criada.
+- A aba **Histórico** mostra os pontos de cada pessoa por semana.
+
+No `db.json` a faxina fica na chave `faxina` (a chave `meses` não mudou):
+
+```json
+"faxina": {
+  "pessoas": ["Gabriel", "Letícia"],
+  "tarefasFixas": [{ "id": "f1", "nome": "Varrer casa", "peso": 3, "juntos": false }],
+  "semanas": {
+    "2026-10-05": [
+      { "id": "t1", "fixaId": "f1", "nome": "Varrer casa", "peso": 3, "responsavel": "Gabriel", "status": "pendente" }
+    ]
+  }
+}
+```
+
+`status`: `pendente`, `feito` ou `naofez`. `responsavel`: nome da pessoa, `Juntos` ou vazio.
+
 ## Deploy na Vercel
 
 O projeto sobe na Vercel como site estático, sem configuração (nenhum build, `index.html` na raiz).

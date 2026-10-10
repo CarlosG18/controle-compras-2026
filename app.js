@@ -116,7 +116,9 @@
         precoUnit: r.unit, marca: r.brand, observacoes: r.obs
       }));
     });
-    return { app: "controle-compras", versao: 1, ano: 2026, atualizadoEm: new Date().toISOString(), meses: meses };
+    const out = { app: "controle-compras", versao: 1, ano: 2026, atualizadoEm: new Date().toISOString(), meses: meses };
+    if (state && state.faxina) out.faxina = state.faxina;
+    return out;
   }
   function fromDB(data) {
     if (!data || typeof data !== "object" || !data.meses || typeof data.meses !== "object") {
@@ -139,7 +141,7 @@
     try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (e) { return {}; }
   }
   function savePrefs() {
-    try { localStorage.setItem(PREFS_KEY, JSON.stringify({ view: state.view, month: state.month, topMonth: state.topMonth, filter: state.filter, sort: state.sort, group: state.group })); } catch (e) { /* ignora */ }
+    try { localStorage.setItem(PREFS_KEY, JSON.stringify({ view: state.view, month: state.month, topMonth: state.topMonth, filter: state.filter, sort: state.sort, group: state.group, module: state.module, week: state.week, fxView: state.fxView, fxFilter: state.fxFilter })); } catch (e) { /* ignora */ }
   }
 
   async function askServer() {
@@ -153,12 +155,13 @@
     } catch (e) { return null; }
   }
 
+  const snapshot = () => JSON.stringify([state.months, state.faxina]);
   function save() { savePrefs(); clearTimeout(DB.timer); DB.timer = setTimeout(flush, 400); }
   function flush() { clearTimeout(DB.timer); DB.chain = DB.chain.then(writeDB); return DB.chain; }
 
   async function writeDB() {
     if (DB.readonly) return;
-    const snap = JSON.stringify(state.months);
+    const snap = snapshot();
     if (snap === DB.lastSaved) return;
     const payload = toDB(state.months);
     const text = JSON.stringify(payload, null, 2);
@@ -185,13 +188,14 @@
   // ao voltar para a aba, busca alterações feitas em outro aparelho (modo servidor)
   async function pullServer() {
     if (DB.mode !== "server" || DB.readonly) return;
-    if (JSON.stringify(state.months) !== DB.lastSaved) return; // há alterações locais ainda não salvas
+    if (snapshot() !== DB.lastSaved) return; // há alterações locais ainda não salvas
     const srv = await askServer();
     if (!srv || !srv.data || srv.data.atualizadoEm === DB.updatedAt) return;
     try {
       state.months = fromDB(srv.data);
+      state.faxina = fromFaxina(srv.data) || state.faxina;
       DB.updatedAt = srv.data.atualizadoEm;
-      DB.lastSaved = JSON.stringify(state.months);
+      DB.lastSaved = snapshot();
       setStatus("ok");
       render();
     } catch (e) { /* mantém o que está na tela */ }
@@ -394,15 +398,30 @@
     render();
     window.scrollTo({ top: 0, behavior: "auto" });
   }
-  $tabs.forEach(b => b.addEventListener("click", () => go(b.dataset.goto)));
+  $tabs.forEach(b => b.addEventListener("click", () => (state.module === "faxina" ? fxGo(b.dataset.goto) : go(b.dataset.goto))));
   $status.addEventListener("click", () => openDataSheet());
-  $addTop.addEventListener("click", () => openItemSheet(null));
+  $addTop.addEventListener("click", () => (state.module === "faxina" ? fxOpenSheet(null) : openItemSheet(null)));
 
   function render() {
     $view.removeAttribute("aria-busy");
-    $tabs.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.goto === state.view)));
+    renderModule();
+    const fx = state.module === "faxina";
+    const tabs = fx ? [["week", "Semana"], ["hist", "Histórico"]] : [["month", "Mês"], ["year", "Ano"]];
+    $tabs.forEach((b, i) => {
+      b.dataset.goto = tabs[i][0];
+      b.textContent = tabs[i][1];
+      b.setAttribute("aria-pressed", String(tabs[i][0] === (fx ? state.fxView : state.view)));
+    });
     $addTop.disabled = false;
-    $addTop.innerHTML = `${icon("plus")}Adicionar item`;
+    $addTop.innerHTML = `${icon("plus")}${fx ? "Adicionar tarefa" : "Adicionar item"}`;
+    if (fx) {
+      fxRender();
+      const showBar = state.fxView === "week";
+      $bar.hidden = !showBar;
+      document.body.classList.toggle("has-bar", showBar);
+      if (showBar) fxRenderBar();
+      return;
+    }
     if (state.view === "year") { renderYear(); $bar.hidden = true; document.body.classList.remove("has-bar"); }
     else { renderMonth(); $bar.hidden = false; document.body.classList.add("has-bar"); renderBar(); }
   }
@@ -1040,7 +1059,7 @@
     }[DB.mode];
     body.innerHTML = `
       <div class="data-mode"><span class="stat-ic green">${mode[0]}</span><div>
-        <p style="color:var(--ink);font-weight:600;margin-bottom:2px">${MODE_LABEL[DB.mode]} · ${total} itens em 12 meses</p>
+        <p style="color:var(--ink);font-weight:600;margin-bottom:2px">${MODE_LABEL[DB.mode]} · ${total} itens de compras · ${Object.keys(state.faxina.semanas).length} ${Object.keys(state.faxina.semanas).length === 1 ? "semana" : "semanas"} de faxina</p>
         <p>${mode[1]}</p>
         ${DB.updatedAt ? `<p style="margin-top:6px">Última gravação: <b>${timeLabel(DB.updatedAt)}</b></p>` : ""}
       </div></div>
@@ -1066,6 +1085,8 @@
   async function adoptData(data, origem) {
     const months = fromDB(data);
     state.months = months;
+    const fx = fromFaxina(data);
+    if (fx) state.faxina = fx;
     DB.readonly = false;
     DB.lastSaved = "";
     dataNote = { msg: `${origem}: ${MESES.reduce((n, m) => n + months[m].length, 0)} itens carregados.` };
@@ -1118,6 +1139,7 @@
         const months = fromDB(data); // valida antes de trocar o destino
         DB.mode = "file"; DB.handle = h; DB.fileName = h.name;
         state.months = months; DB.lastSaved = ""; DB.readonly = false;
+        const fx = fromFaxina(data); if (fx) state.faxina = fx;
         dataNote = { msg: `Conectado a ${h.name}.` };
         render(); await flush(); renderStatus(); renderDataSheet();
       } else if (a === "new-file") {
@@ -1214,23 +1236,688 @@
     if (tr && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); go("month", tr.dataset.m); }
   });
 
+  /* ---------------- Divisão de faxina ----------------
+   * Cada semana (segunda a domingo) tem sua lista. Peso: pesada 3, média 2, leve 1.
+   * Responsável: uma das pessoas, "Juntos" ou ninguém. Situação: pendente, feita ou "não fez".
+   * Pontos de uma pessoa = soma dos pesos das tarefas dela marcadas como feitas.
+   * Tarefas fixas são copiadas para cada nova semana criada.
+   */
+  Object.assign(ICONS, {
+    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    sparkle: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.7 1.8L21.5 17.5l-1.8.7L19 20l-.7-1.8-1.8-.7 1.8-.7z"/>',
+    shuffle: '<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>'
+  });
+
+  const PESOS = [
+    { v: 3, label: "Pesada", plural: "Pesadas" },
+    { v: 2, label: "Média", plural: "Médias" },
+    { v: 1, label: "Leve", plural: "Leves" }
+  ];
+  const JUNTOS = "Juntos";
+  const STATUS_LABEL = { pendente: "Pendente", feito: "Feita", naofez: "Não fez" };
+  const pts = n => `${n} ${n === 1 ? "pt" : "pts"}`;
+
+  // semanas de segunda a domingo, no horário local
+  const pad2 = n => String(n).padStart(2, "0");
+  const isoDate = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  const parseIso = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+  const mondayOf = d => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
+  const addDays = (s, n) => { const d = parseIso(s); d.setDate(d.getDate() + n); return isoDate(d); };
+  const thisWeek = () => isoDate(mondayOf(new Date()));
+  const MES_CURTO = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  function weekLabel(s) {
+    const a = parseIso(s), b = parseIso(addDays(s, 6));
+    return a.getMonth() === b.getMonth()
+      ? `${a.getDate()} a ${b.getDate()} de ${MES_CURTO[b.getMonth()]}`
+      : `${a.getDate()} ${MES_CURTO[a.getMonth()]} a ${b.getDate()} ${MES_CURTO[b.getMonth()]}`;
+  }
+  function weekTitle(s) {
+    const cur = thisWeek();
+    if (s === cur) return "Esta semana";
+    if (s === addDays(cur, -7)) return "Semana passada";
+    if (s === addDays(cur, 7)) return "Próxima semana";
+    return parseIso(s) < parseIso(cur) ? "Semana anterior" : "Semana futura";
+  }
+
+  // lista da imagem enviada (semana de 5 a 11 de outubro de 2026)
+  function seedFaxina() {
+    const G = "Gabriel", L = "Letícia", J = JUNTOS;
+    const T = [
+      ["Varrer casa", 3, G, "pendente"], ["Passar pano", 3, G, "naofez"], ["Lavar banheiro", 3, L, "pendente"],
+      ["Lavar os panos de chão", 3, G, "naofez"], ["Lavar roupa e toalha", 3, L, "pendente"],
+      ["Limpar airfryer", 2, G, "naofez"], ["Guardar feira", 2, "", "pendente"], ["Lavar louça", 2, L, "pendente"],
+      ["Fazer feijão", 2, L, "pendente"], ["Limpar fogão", 1, L, "pendente"], ["Juntar lixo", 1, G, "pendente"],
+      ["Limpar pia", 1, "", "pendente"], ["Mistura da semana", 1, G, "pendente"], ["Guardar louça", 1, L, "pendente"],
+      ["Pegar coisas pela casa", 1, G, "pendente"], ["Lavar roupa", 2, J, "pendente"], ["Organizar guarda-roupa", 1, J, "pendente"]
+    ];
+    const fixas = [], semana = [];
+    T.forEach(([nome, peso, resp, st]) => {
+      const fid = newId();
+      fixas.push({ id: fid, nome: nome, peso: peso, juntos: resp === J });
+      semana.push({ id: newId(), fixaId: fid, nome: nome, peso: peso, responsavel: resp, status: st });
+    });
+    return { pessoas: [G, L], tarefasFixas: fixas, semanas: { "2026-10-05": semana } };
+  }
+  function fromFaxina(data) {
+    const f = data && data.faxina;
+    if (!f || typeof f !== "object") return null;
+    const pessoas = Array.isArray(f.pessoas) && f.pessoas.length >= 2 ? f.pessoas.slice(0, 2).map(String) : ["Gabriel", "Letícia"];
+    const okPeso = v => ([1, 2, 3].includes(Number(v)) ? Number(v) : 1);
+    const okResp = v => (v === JUNTOS || pessoas.includes(v) ? v : "");
+    const okSt = v => (["pendente", "feito", "naofez"].includes(v) ? v : "pendente");
+    const tarefasFixas = (Array.isArray(f.tarefasFixas) ? f.tarefasFixas : []).map(t => ({
+      id: String(t.id || newId()), nome: String(t.nome || ""), peso: okPeso(t.peso), juntos: !!t.juntos
+    }));
+    const semanas = {};
+    if (f.semanas && typeof f.semanas === "object") {
+      Object.keys(f.semanas).forEach(k => {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(k) || !Array.isArray(f.semanas[k])) return;
+        semanas[k] = f.semanas[k].map(t => ({
+          id: String(t.id || newId()), fixaId: t.fixaId ? String(t.fixaId) : null, nome: String(t.nome || ""),
+          peso: okPeso(t.peso), responsavel: okResp(t.responsavel), status: okSt(t.status)
+        }));
+      });
+    }
+    return { pessoas: pessoas, tarefasFixas: tarefasFixas, semanas: semanas };
+  }
+
+  const fxWeek = w => state.faxina.semanas[w || state.week] || null;
+  function fxScore(list) {
+    const P = state.faxina.pessoas;
+    const s = { per: {}, juntos: { total: 0, n: 0, done: 0 }, sem: 0, semPts: 0, total: list.length, feitas: 0, naofez: 0 };
+    P.forEach(p => { s.per[p] = { atrib: 0, feito: 0, n: 0, done: 0, naofez: 0 }; });
+    list.forEach(t => {
+      if (t.status === "feito") s.feitas++;
+      if (t.status === "naofez") s.naofez++;
+      if (t.responsavel === JUNTOS) { s.juntos.total += t.peso; s.juntos.n++; if (t.status === "feito") s.juntos.done++; return; }
+      const r = s.per[t.responsavel];
+      if (!r) { s.sem++; s.semPts += t.peso; return; }
+      r.atrib += t.peso; r.n++;
+      if (t.status === "feito") { r.feito += t.peso; r.done++; }
+      if (t.status === "naofez") r.naofez++;
+    });
+    return s;
+  }
+
+  // divide as tarefas pendentes equilibrando os pontos atribuídos
+  function fxDivide(list, onlyUnassigned) {
+    const P = state.faxina.pessoas;
+    const load = {};
+    P.forEach(p => { load[p] = 0; });
+    const movable = [];
+    list.forEach(t => {
+      if (t.responsavel === JUNTOS) return;
+      if (t.status === "pendente" && (!onlyUnassigned || !t.responsavel)) movable.push(t);
+      else if (load[t.responsavel] != null) load[t.responsavel] += t.peso;
+    });
+    const order = movable.map(t => ({ t: t, r: Math.random() })).sort((a, b) => b.t.peso - a.t.peso || a.r - b.r).map(x => x.t);
+    order.forEach(t => {
+      const min = Math.min.apply(null, P.map(p => load[p]));
+      const cands = P.filter(p => load[p] === min);
+      const p = cands[Math.floor(Math.random() * cands.length)];
+      t.responsavel = p;
+      load[p] += t.peso;
+    });
+    // ajuste fino: move ou troca tarefas se isso aproximar os pontos
+    for (let guard = 0; guard < 60; guard++) {
+      const [a, b] = P;
+      const D = Math.abs(load[a] - load[b]);
+      if (D <= 1) break;
+      const big = load[a] > load[b] ? a : b, small = big === a ? b : a;
+      const mine = order.filter(t => t.responsavel === big), theirs = order.filter(t => t.responsavel === small);
+      const mv = mine.find(t => Math.abs(D - 2 * t.peso) < D);
+      if (mv) { mv.responsavel = small; load[big] -= mv.peso; load[small] += mv.peso; continue; }
+      let swapped = false;
+      for (const x of mine) {
+        for (const y of theirs) {
+          const delta = x.peso - y.peso;
+          if (delta > 0 && Math.abs(D - 2 * delta) < D) { x.responsavel = small; y.responsavel = big; load[big] -= delta; load[small] += delta; swapped = true; break; }
+        }
+        if (swapped) break;
+      }
+      if (!swapped) break;
+    }
+    return order.length;
+  }
+
+  /* ----- módulo (seletor no topo) ----- */
+  const MODULES = {
+    compras: { name: "Controle de Compras", short: "Compras", sub: "Lista do mercado e gastos do mês", icon: "cart" },
+    faxina: { name: "Divisão de Faxina", short: "Faxina", sub: "Tarefas da casa divididas por pontos", icon: "sparkle" }
+  };
+  const $modBtn = document.getElementById("modBtn");
+  const $modPop = document.getElementById("modPop");
+  function renderModule() {
+    const m = MODULES[state.module];
+    document.getElementById("modMark").innerHTML = icon(m.icon);
+    document.getElementById("modName").innerHTML = `<span class="long">${m.name}</span><span class="short">${m.short}</span>${state.module === "compras" ? ' <span class="yr">2026</span>' : ""}`;
+    $modBtn.setAttribute("aria-label", `${m.name}. Trocar de área`);
+    document.title = m.name + (state.module === "compras" ? " 2026" : "");
+  }
+  function openModPop() {
+    $modPop.innerHTML = Object.keys(MODULES).map(k => `
+      <button type="button" role="menuitemradio" aria-checked="${k === state.module}" data-module="${k}">
+        <span class="brand-mark sm" aria-hidden="true">${icon(MODULES[k].icon)}</span>
+        <span><b>${MODULES[k].name}</b><small>${MODULES[k].sub}</small></span>
+        ${k === state.module ? icon("check", "sm") : "<span></span>"}
+      </button>`).join("");
+    $modPop.hidden = false;
+    $modBtn.setAttribute("aria-expanded", "true");
+    const cur = $modPop.querySelector('[aria-checked="true"]');
+    if (cur) cur.focus();
+  }
+  function closeModPop(focusBtn) {
+    if ($modPop.hidden) return;
+    $modPop.hidden = true;
+    $modBtn.setAttribute("aria-expanded", "false");
+    if (focusBtn) $modBtn.focus();
+  }
+  $modBtn.addEventListener("click", () => ($modPop.hidden ? openModPop() : closeModPop(true)));
+  $modPop.addEventListener("click", e => {
+    const b = e.target.closest("[data-module]");
+    if (!b) return;
+    closeModPop(false);
+    if (b.dataset.module === state.module) return;
+    state.module = b.dataset.module;
+    monthAnim = "fade-in";
+    savePrefs();
+    render();
+    window.scrollTo({ top: 0, behavior: "auto" });
+    $modBtn.focus();
+  });
+  document.addEventListener("click", e => { if (!$modPop.hidden && !e.target.closest("#modPop") && !e.target.closest("#modBtn")) closeModPop(false); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$modPop.hidden) closeModPop(true); });
+
+  /* ----- navegação da faxina ----- */
+  function fxGo(view, week) {
+    if (week) {
+      monthAnim = week > state.week ? "slide-l" : week < state.week ? "slide-r" : "fade-in";
+      state.week = week;
+    } else monthAnim = "fade-in";
+    state.fxView = view;
+    savePrefs();
+    render();
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+  function fxRender() {
+    if (state.fxView === "hist") fxRenderHist();
+    else fxRenderWeek();
+  }
+  function fxRefresh() {
+    if (!document.getElementById("fxList")) { render(); return; }
+    fxRenderSummary(); fxRenderList(); fxRenderBar();
+  }
+
+  function fxRenderWeek() {
+    const w = state.week, list = fxWeek(w), cur = thisWeek();
+    const head = `
+      ${bannerHTML()}
+      <div class="monthbar">
+        <button type="button" class="icon-btn" data-act="fx-prev" aria-label="Semana anterior">${icon("chevL")}</button>
+        <div class="week-title"><span class="eyebrow">${weekTitle(w)}</span><h1>${weekLabel(w)}</h1></div>
+        <button type="button" class="icon-btn" data-act="fx-next" aria-label="Próxima semana">${icon("chevR")}</button>
+        <span class="spacer"></span>
+        ${w !== cur ? `<button type="button" class="btn btn-quiet" data-act="fx-today">${icon("calendar", "sm")}Esta semana</button>` : ""}
+      </div>`;
+    if (!list) {
+      const n = state.faxina.tarefasFixas.length;
+      $view.innerHTML = head + `<div class="empty ${monthAnim}">
+        <span class="ic">${icon("calendar")}</span>
+        <h3>Semana de ${weekLabel(w)} ainda sem lista</h3>
+        <p>${n ? `As ${n} tarefas fixas serão copiadas para esta semana. As marcadas como “Juntos” continuam juntas.` : "Ainda não há tarefas fixas. Crie a lista e adicione as tarefas."}</p>
+        <div class="empty-actions">
+          ${n ? `<button type="button" class="btn btn-primary" data-act="fx-create" data-divide="1">${icon("shuffle")}Criar e dividir</button>
+                 <button type="button" class="btn" data-act="fx-create" data-divide="0">Criar sem dividir</button>`
+              : `<button type="button" class="btn btn-primary" data-act="fx-create" data-divide="0">${icon("plus")}Criar lista</button>`}
+        </div></div>`;
+      monthAnim = "";
+      return;
+    }
+    $view.innerHTML = head + `
+      <div class="month-layout ${monthAnim}">
+        <aside class="summary" id="fxSummary" aria-label="Placar da semana"></aside>
+        <section class="listsec" aria-labelledby="fxTitle">
+          <div class="listhead"><h2 id="fxTitle">Tarefas da semana</h2><span class="count" id="fxCount" aria-live="polite"></span></div>
+          <div class="controls"><div class="seg fx-seg" id="fxSeg" role="group" aria-label="Mostrar tarefas de"></div></div>
+          <div class="list" id="fxList"></div>
+        </section>
+      </div>`;
+    monthAnim = "";
+    fxRenderSummary();
+    fxRenderList();
+  }
+
+  const avatarHTML = (resp, extra) => {
+    const P = state.faxina.pessoas, i = P.indexOf(resp);
+    if (resp === JUNTOS) return `<span class="avatar pj${extra || ""}" aria-hidden="true">${icon("users")}</span>`;
+    if (i >= 0) return `<span class="avatar p${i + 1}${extra || ""}" aria-hidden="true">${esc(resp.charAt(0))}</span>`;
+    return `<span class="avatar pn${extra || ""}" aria-hidden="true">?</span>`;
+  };
+
+  function fxRenderSummary() {
+    const el = document.getElementById("fxSummary");
+    if (!el) return;
+    const list = fxWeek(), s = fxScore(list), P = state.faxina.pessoas;
+    const [a, b] = P;
+    const diff = s.per[a].atrib - s.per[b].atrib;
+    const bal = Math.abs(diff) <= 1
+      ? `<span class="bal ok">${icon("check", "sm")}Divisão equilibrada</span>`
+      : `<span class="bal warn">${icon("alert", "sm")}${esc(diff > 0 ? a : b)} com ${pts(Math.abs(diff))} a mais</span>`;
+    const prog = s.total ? (s.feitas / s.total) * 100 : 0;
+    el.innerHTML = `
+      <section class="card hero">
+        <div class="hero-top"><p class="label">Placar da semana</p>${bal}</div>
+        <div class="people">
+          ${P.map((p, i) => {
+            const r = s.per[p];
+            const pr = r.atrib ? (r.feito / r.atrib) * 100 : 0;
+            return `<div class="person p${i + 1}">
+              <div class="person-head">${avatarHTML(p)}<b>${esc(p)}</b></div>
+              <p class="score"><span class="big-n">${r.feito}</span><span class="of">de ${pts(r.atrib)}</span></p>
+              <div class="progress" role="progressbar" aria-label="Pontos feitos por ${esc(p)}" aria-valuemin="0" aria-valuemax="${r.atrib}" aria-valuenow="${r.feito}"><i style="width:${pr}%"></i></div>
+              <p class="person-sub">${r.done} de ${r.n} feitas${r.naofez ? ` · <span class="nf">${r.naofez} não fez</span>` : ""}</p>
+            </div>`;
+          }).join("")}
+        </div>
+        <div>
+          <div class="progress" aria-hidden="true"><i style="width:${prog}%"></i></div>
+          <div class="progress-row"><span><b>${s.feitas}</b> de ${s.total} tarefas feitas</span><span>${Math.round(prog)}%</span></div>
+        </div>
+        ${s.juntos.n ? `<p class="planned">${icon("users", "sm")} Juntos: <b>${s.juntos.done} de ${s.juntos.n}</b> feitas · ${pts(s.juntos.total)}</p>` : ""}
+        ${s.sem ? `<p class="unassigned">${icon("alert", "sm")}${s.sem} ${s.sem === 1 ? "tarefa sem responsável" : "tarefas sem responsável"} · ${pts(s.semPts)}</p>` : ""}
+        <button type="button" class="btn ${s.sem ? "btn-primary" : ""}" data-act="fx-divide">${icon("shuffle")}Sugerir divisão</button>
+      </section>
+      <section class="card legend-card" aria-label="Pesos">
+        ${PESOS.map(p => `<span><span class="wdot w${p.v}"></span><b>${p.label}</b> ${pts(p.v)}</span>`).join("")}
+      </section>`;
+  }
+
+  function fxItemHTML(t) {
+    const P = state.faxina.pessoas;
+    const who = t.responsavel === JUNTOS ? "Juntos" : P.includes(t.responsavel) ? t.responsavel : "";
+    const tag = t.status === "feito" ? `<span class="done-tag">${icon("check")}Feita</span>`
+      : t.status === "naofez" ? `<span class="nf-tag">${icon("x")}Não fez</span>` : "";
+    const name = t.nome.trim() || "Tarefa sem nome";
+    return `<li class="item${t.status === "feito" ? " done" : ""}${t.status === "naofez" ? " missed" : ""}" data-id="${t.id}">
+      <label class="check" title="${t.status === "feito" ? "Desmarcar" : "Marcar como feita"}">
+        <input type="checkbox" data-act="fx-toggle" ${t.status === "feito" ? "checked" : ""} aria-label="${esc(name)}: ${STATUS_LABEL[t.status].toLowerCase()}. Marcar como ${t.status === "feito" ? "pendente" : "feita"}">
+        <span class="box">${icon("check")}</span>
+      </label>
+      <button type="button" class="item-main" data-act="fx-edit" aria-label="Editar ${esc(name)}">
+        <span class="item-name">${esc(name)}</span>
+        <span class="item-meta">${tag}<span class="wtag"><span class="wdot w${t.peso} sm"></span>${pts(t.peso)}</span>${t.fixaId ? "" : `<span>Só esta semana</span>`}</span>
+        <span class="item-total"><span class="who${who ? "" : " none"}">${avatarHTML(t.responsavel)}<span class="nm">${who ? esc(who) : "Sem resp."}</span></span></span>
+        <span class="edit-ic">${icon("pencil", "sm")}</span>
+      </button>
+    </li>`;
+  }
+
+  function fxRenderList() {
+    const el = document.getElementById("fxList");
+    if (!el) return;
+    const list = fxWeek(), P = state.faxina.pessoas, s = fxScore(list);
+    const opts = [["all", "Todas", list.length]].concat(P.map(p => [p, p, s.per[p].n]), [[JUNTOS, "Juntos", s.juntos.n]]);
+    if (s.sem) opts.push(["none", "Sem resp.", s.sem]);
+    if (!opts.some(o => o[0] === state.fxFilter)) state.fxFilter = "all";
+    document.getElementById("fxSeg").innerHTML = opts.map(([k, l, n]) =>
+      `<button type="button" data-fxfilter="${esc(k)}" aria-pressed="${state.fxFilter === k}">${esc(l)}<span class="c">${n}</span></button>`).join("");
+    const f = state.fxFilter;
+    const rows = list.filter(t => f === "all" || (f === "none" ? !t.responsavel : t.responsavel === f));
+    document.getElementById("fxCount").textContent = rows.length === list.length ? `${list.length} ${list.length === 1 ? "tarefa" : "tarefas"}` : `${rows.length} de ${list.length} tarefas`;
+    if (!list.length) {
+      el.innerHTML = `<div class="empty"><span class="ic">${icon("sparkle")}</span><h3>Nenhuma tarefa nesta semana</h3><p>Adicione as tarefas da casa e defina o peso de cada uma.</p>
+        <button type="button" class="btn btn-primary" data-act="fx-add">${icon("plus")}Adicionar tarefa</button></div>`;
+      return;
+    }
+    if (!rows.length) {
+      el.innerHTML = `<div class="empty"><span class="ic">${icon("users")}</span><h3>Nenhuma tarefa neste filtro</h3><p>Não há tarefas para essa opção nesta semana.</p>
+        <button type="button" class="btn" data-act="fx-all">Ver todas</button></div>`;
+      return;
+    }
+    el.innerHTML = PESOS.map(p => {
+      const g = rows.filter(t => t.peso === p.v);
+      if (!g.length) return "";
+      const done = g.filter(t => t.status === "feito").length;
+      return `<section class="group" aria-label="${p.plural}">
+        <div class="group-head"><span class="wdot w${p.v}"></span><h3>${p.plural}</h3><span class="meta">${pts(p.v)} cada · ${done}/${g.length} feitas</span></div>
+        <ul class="items">${g.map(fxItemHTML).join("")}</ul></section>`;
+    }).join("");
+  }
+
+  function fxRenderBar() {
+    const list = fxWeek(), P = state.faxina.pessoas;
+    if (!list) {
+      $bar.innerHTML = `<div class="sum"><b>${weekLabel(state.week)}</b><small>Semana sem lista</small></div>
+        <button type="button" class="btn btn-primary" data-act="fx-add">${icon("plus")}Adicionar</button>`;
+      return;
+    }
+    const s = fxScore(list), prog = s.total ? (s.feitas / s.total) * 100 : 0;
+    $bar.innerHTML = `
+      <div class="sum">
+        <div class="top"><span class="fx-mini">${P.map(p => `${avatarHTML(p, " xs")}<b>${s.per[p].feito}</b><small>/${s.per[p].atrib}</small>`).join("")}</span><small>${s.feitas}/${s.total} feitas</small></div>
+        <div class="progress" aria-hidden="true"><i style="width:${prog}%"></i></div>
+      </div>
+      <button type="button" class="btn btn-primary" data-act="fx-add">${icon("plus")}Adicionar</button>`;
+  }
+  $bar.addEventListener("click", e => { if (e.target.closest('[data-act="fx-add"]')) fxOpenSheet(null); });
+
+  function fxCreateWeek(w, divide) {
+    const list = state.faxina.tarefasFixas.map(f => ({ id: newId(), fixaId: f.id, nome: f.nome, peso: f.peso, responsavel: f.juntos ? JUNTOS : "", status: "pendente" }));
+    state.faxina.semanas[w] = list;
+    if (divide) fxDivide(list, true);
+    save();
+    monthAnim = "fade-in";
+    render();
+    if (divide && list.length) {
+      const s = fxScore(list);
+      toast(`Lista criada e dividida: ${state.faxina.pessoas.map(p => `${p} ${pts(s.per[p].atrib)}`).join(" · ")}`);
+    } else toast("Lista da semana criada.");
+  }
+
+  function fxToggle(input) {
+    const li = input.closest(".item");
+    const list = fxWeek();
+    const t = list && list.find(x => x.id === li.dataset.id);
+    if (!t) return;
+    t.status = input.checked ? "feito" : "pendente";
+    save();
+    if (navigator.vibrate && input.checked) { try { navigator.vibrate(12); } catch (err) { /* ignora */ } }
+    const hadFocus = document.activeElement === input;
+    fxRenderSummary(); fxRenderBar(); fxRenderList();
+    const fresh = document.querySelector(`.item[data-id="${t.id}"]`);
+    if (fresh) {
+      const chk = fresh.querySelector(".check");
+      chk.classList.add("pulse");
+      if (hadFocus) fresh.querySelector('[data-act="fx-toggle"]').focus();
+    }
+  }
+
+  $view.addEventListener("click", e => {
+    if (state.module !== "faxina") return;
+    const fb = e.target.closest("[data-fxfilter]");
+    if (fb) { state.fxFilter = fb.dataset.fxfilter; savePrefs(); fxRenderList(); return; }
+    const a = e.target.closest("[data-act]");
+    const act = a && a.dataset.act;
+    if (!act || !act.startsWith("fx-") || act === "fx-toggle") return;
+    if (act === "fx-prev") fxGo("week", addDays(state.week, -7));
+    else if (act === "fx-next") fxGo("week", addDays(state.week, 7));
+    else if (act === "fx-today") fxGo("week", thisWeek());
+    else if (act === "fx-create") fxCreateWeek(state.week, a.dataset.divide === "1");
+    else if (act === "fx-edit") fxOpenSheet(a.closest(".item").dataset.id);
+    else if (act === "fx-add") fxOpenSheet(null);
+    else if (act === "fx-divide") fxOpenDivide();
+    else if (act === "fx-all") { state.fxFilter = "all"; savePrefs(); fxRenderList(); }
+    else if (act === "fx-goto") fxGo("week", a.dataset.w);
+  });
+  $view.addEventListener("change", e => { if (e.target.dataset && e.target.dataset.act === "fx-toggle") fxToggle(e.target); });
+  $view.addEventListener("keydown", e => {
+    const tr = e.target.closest && e.target.closest('tr[data-act="fx-goto"]');
+    if (tr && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); fxGo("week", tr.dataset.w); }
+  });
+
+  /* ----- adicionar / editar tarefa ----- */
+  let fxEd = null;
+  function fxOpenSheet(id) {
+    if (state.module !== "faxina") return;
+    if (state.fxView !== "week") fxGo("week");
+    if (!fxWeek()) { state.faxina.semanas[state.week] = []; save(); render(); }
+    const list = fxWeek();
+    const t = id ? list.find(x => x.id === id) : null;
+    if (id && !t) return;
+    fxEd = { id: id, confirm: false };
+    const P = state.faxina.pessoas;
+    const d = t || { nome: "", peso: ui.fxPeso || 2, responsavel: "", status: "pendente", fixaId: null };
+    const fixa = t ? !!t.fixaId : true;
+    const respOpts = P.map((p, i) => [p, p, "p" + (i + 1)]).concat([[JUNTOS, "Juntos", "pj"], ["", "Ninguém", "pn"]]);
+    openSheet("fx", `
+      <form id="fxForm" novalidate>
+        <div class="sheet-head">
+          <h2 id="sheetTitle">${t ? "Editar tarefa" : "Nova tarefa"} <span class="label">· ${weekLabel(state.week)}</span></h2>
+          <button type="button" class="icon-btn" data-close aria-label="Fechar">${icon("x")}</button>
+        </div>
+        <div class="sheet-body">
+          <div class="field" id="fw-fxnome">
+            <label for="fx-nome">Tarefa</label>
+            <input class="input big" id="fx-nome" autocomplete="off" placeholder="Ex.: Limpar geladeira" value="${esc(d.nome)}" aria-describedby="e-fxnome">
+            <p class="err" id="e-fxnome">${icon("alert", "sm")}<span></span></p>
+          </div>
+          <fieldset class="field">
+            <legend class="flabel">Peso</legend>
+            <div class="chips c3">${PESOS.map(p => `<label class="chip-opt w${p.v}"><input type="radio" name="peso" value="${p.v}" ${p.v === d.peso ? "checked" : ""}><span><span class="wdot w${p.v}"></span><span>${p.label}<small>${pts(p.v)}</small></span></span></label>`).join("")}</div>
+          </fieldset>
+          <fieldset class="field">
+            <legend class="flabel">Quem faz</legend>
+            <div class="chips">${respOpts.map(([v, l, cls]) => `<label class="chip-opt ${cls}"><input type="radio" name="resp" value="${esc(v)}" ${v === d.responsavel ? "checked" : ""}><span>${avatarHTML(v, " xs")}${esc(l)}</span></label>`).join("")}</div>
+          </fieldset>
+          <fieldset class="field">
+            <legend class="flabel">Situação</legend>
+            <div class="chips c3">${["pendente", "feito", "naofez"].map(st => `<label class="chip-opt st-${st}"><input type="radio" name="status" value="${st}" ${st === d.status ? "checked" : ""}><span>${icon(st === "feito" ? "check" : st === "naofez" ? "x" : "clock", "sm")}${STATUS_LABEL[st]}</span></label>`).join("")}</div>
+          </fieldset>
+          <label class="switch-row toggle" for="fx-fixa">
+            <span><span class="t">Repetir toda semana</span><span class="s" style="display:block">Entra sozinha nas próximas semanas criadas</span></span>
+            <input type="checkbox" id="fx-fixa" ${fixa ? "checked" : ""}><span class="sw"></span>
+          </label>
+        </div>
+        <div class="sheet-foot" id="fxFoot"></div>
+      </form>`);
+    fxRenderFoot();
+    const f = document.getElementById("fxForm");
+    f.addEventListener("input", e => clearFieldError(e.target));
+    f.addEventListener("submit", e => { e.preventDefault(); fxSubmit(e.submitter && e.submitter.dataset.more === "1"); });
+    f.addEventListener("click", e => { const a = e.target.closest("[data-fxact]"); if (a) fxFootAction(a.dataset.fxact); });
+    const nome = document.getElementById("fx-nome");
+    nome.addEventListener("focus", () => { if (isNarrow()) setTimeout(() => nome.scrollIntoView({ block: "center", behavior: reduceMotion() ? "auto" : "smooth" }), 280); });
+    setTimeout(() => {
+      if (!t) nome.focus();
+      else { const h = document.getElementById("sheetTitle"); h.setAttribute("tabindex", "-1"); h.focus(); }
+    }, 60);
+  }
+
+  function fxRenderFoot() {
+    const foot = document.getElementById("fxFoot");
+    if (!foot) return;
+    const list = fxWeek();
+    const t = fxEd.id && list ? list.find(x => x.id === fxEd.id) : null;
+    if (fxEd.confirm && t) {
+      foot.innerHTML = t.fixaId
+        ? `<p class="confirm-text">Excluir “${esc(t.nome || "tarefa sem nome")}”? Ela se repete toda semana.</p>
+           <button type="button" class="btn" data-fxact="cancel-del">Cancelar</button>
+           <button type="button" class="btn" data-fxact="del-week">Só desta semana</button>
+           <button type="button" class="btn btn-danger" data-fxact="del-all">${icon("trash")}Desta e das próximas</button>`
+        : `<p class="confirm-text">Excluir “${esc(t.nome || "tarefa sem nome")}” desta semana?</p>
+           <button type="button" class="btn" data-fxact="cancel-del">Cancelar</button>
+           <button type="button" class="btn btn-danger" data-fxact="del-week">${icon("trash")}Excluir</button>`;
+      foot.querySelector('[data-fxact="cancel-del"]').focus();
+      return;
+    }
+    foot.innerHTML = t
+      ? `<button type="button" class="btn btn-danger-quiet" data-fxact="ask-del">${icon("trash")}Excluir tarefa</button><span class="grow"></span>
+         <button type="button" class="btn" data-close>Cancelar</button>
+         <button type="submit" class="btn btn-primary">Salvar</button>`
+      : `<button type="submit" class="btn" data-more="1">Salvar e adicionar outra</button><span class="grow"></span>
+         <button type="submit" class="btn btn-primary">${icon("plus")}Adicionar</button>`;
+  }
+
+  function fxFootAction(a) {
+    if (a === "ask-del") { fxEd.confirm = true; fxRenderFoot(); }
+    else if (a === "cancel-del") { fxEd.confirm = false; fxRenderFoot(); }
+    else if (a === "del-week" || a === "del-all") fxDelete(fxEd.id, a === "del-all");
+  }
+
+  function fxSyncFixa(t, fixa) {
+    const F = state.faxina.tarefasFixas;
+    const cur = t.fixaId ? F.find(f => f.id === t.fixaId) : null;
+    if (fixa) {
+      if (cur) Object.assign(cur, { nome: t.nome, peso: t.peso, juntos: t.responsavel === JUNTOS });
+      else { const f = { id: newId(), nome: t.nome, peso: t.peso, juntos: t.responsavel === JUNTOS }; F.push(f); t.fixaId = f.id; }
+    } else if (t.fixaId) {
+      state.faxina.tarefasFixas = F.filter(f => f.id !== t.fixaId);
+      t.fixaId = null;
+    }
+  }
+
+  function fxSubmit(another) {
+    const nomeEl = document.getElementById("fx-nome");
+    const nome = nomeEl.value.trim();
+    if (!nome) { setFieldError("fxnome", "Informe o nome da tarefa."); nomeEl.focus(); return; }
+    const val = n => { const el = document.querySelector(`#fxForm input[name="${n}"]:checked`); return el ? el.value : null; };
+    const peso = Number(val("peso")) || 2;
+    const responsavel = val("resp") || "";
+    const status = val("status") || "pendente";
+    const fixa = document.getElementById("fx-fixa").checked;
+    ui.fxPeso = peso;
+    const list = fxWeek();
+    const editingId = fxEd.id;
+    let t;
+    if (editingId) {
+      t = list.find(x => x.id === editingId);
+      if (!t) { closeSheet(); return; }
+      Object.assign(t, { nome: nome, peso: peso, responsavel: responsavel, status: status });
+    } else {
+      t = { id: newId(), fixaId: null, nome: nome, peso: peso, responsavel: responsavel, status: status };
+      list.push(t);
+    }
+    fxSyncFixa(t, fixa);
+    save();
+    if (!editingId && another) {
+      toast(`“${nome}” adicionada.`);
+      fxRefresh();
+      nomeEl.value = "";
+      const set = (n, v) => { const r = document.querySelector(`#fxForm input[name="${n}"][value="${v}"]`); if (r) r.checked = true; };
+      set("resp", ""); set("status", "pendente");
+      nomeEl.focus();
+      return;
+    }
+    closeSheet();
+    if (state.fxFilter !== "all" && !(state.fxFilter === t.responsavel || (state.fxFilter === "none" && !t.responsavel))) state.fxFilter = "all";
+    fxRefresh();
+    flashItem(t.id, !editingId);
+    toast(editingId ? "Tarefa salva." : `“${nome}” adicionada.`);
+  }
+
+  function fxDelete(id, alsoFixa) {
+    const w = state.week, list = fxWeek();
+    const idx = list ? list.findIndex(x => x.id === id) : -1;
+    if (idx < 0) { closeSheet(); return; }
+    const [rem] = list.splice(idx, 1);
+    let remFixa = null, fIdx = -1;
+    if (alsoFixa && rem.fixaId) {
+      fIdx = state.faxina.tarefasFixas.findIndex(f => f.id === rem.fixaId);
+      if (fIdx >= 0) remFixa = state.faxina.tarefasFixas.splice(fIdx, 1)[0];
+    }
+    save();
+    closeSheet();
+    fxRefresh();
+    toast(`“${rem.nome || "Tarefa"}” excluída${remFixa ? " desta e das próximas semanas" : ""}.`, {
+      action: "Desfazer",
+      onAction: () => {
+        const L = state.faxina.semanas[w];
+        if (L) L.splice(Math.min(idx, L.length), 0, rem);
+        if (remFixa) state.faxina.tarefasFixas.splice(Math.min(fIdx, state.faxina.tarefasFixas.length), 0, remFixa);
+        save();
+        if (state.module === "faxina") { render(); flashItem(rem.id); }
+        toast("Tarefa restaurada.");
+      }
+    });
+  }
+
+  /* ----- sugerir divisão ----- */
+  function fxOpenDivide() {
+    const list = fxWeek();
+    if (!list) return;
+    const movAll = list.filter(t => t.responsavel !== JUNTOS && t.status === "pendente");
+    const movNone = movAll.filter(t => !t.responsavel);
+    const sum = a => a.reduce((n, t) => n + t.peso, 0);
+    const choice = (only, ic, title, sub) => `<button type="button" class="choice" data-fxdiv="${only}">
+      <span class="stat-ic green">${icon(ic)}</span><span><b>${title}</b><small>${sub}</small></span></button>`;
+    openSheet("fxdiv", `
+      <div class="sheet-head"><h2 id="sheetTitle">Sugerir divisão</h2><button type="button" class="icon-btn" data-close aria-label="Fechar">${icon("x")}</button></div>
+      <div class="sheet-body">
+        <p class="hint">O app distribui as tarefas pendentes para deixar os pontos o mais parecidos possível (pesada 3, média 2, leve 1). Tarefas feitas, marcadas como “não fez” ou feitas juntos não mudam. Depois dá para trocar qualquer uma.</p>
+        ${movNone.length ? choice("1", "users", "Dividir só as sem responsável", `${movNone.length} ${movNone.length === 1 ? "tarefa" : "tarefas"} · ${pts(sum(movNone))}`) : ""}
+        ${movAll.length ? choice("0", "shuffle", "Refazer a divisão das pendentes", `${movAll.length} tarefas · ${pts(sum(movAll))} sorteadas de novo`) : `<p class="note ok">Não há tarefas pendentes para dividir.</p>`}
+      </div>`);
+    setTimeout(() => { const b = $sheet.querySelector(".choice") || $sheet.querySelector("[data-close]"); if (b) b.focus(); }, 60);
+  }
+  $sheet.addEventListener("click", e => {
+    const b = e.target.closest("[data-fxdiv]");
+    if (!b) return;
+    const w = state.week, list = fxWeek(w);
+    if (!list) return;
+    const before = list.map(t => [t.id, t.responsavel]);
+    fxDivide(list, b.dataset.fxdiv === "1");
+    save();
+    closeSheet();
+    fxRefresh();
+    const s = fxScore(list);
+    toast(`Dividido: ${state.faxina.pessoas.map(p => `${p} ${pts(s.per[p].atrib)}`).join(" · ")}`, {
+      action: "Desfazer",
+      onAction: () => {
+        const L = state.faxina.semanas[w];
+        before.forEach(([id, r]) => { const t = L && L.find(x => x.id === id); if (t) t.responsavel = r; });
+        save();
+        if (state.module === "faxina") render();
+        toast("Divisão desfeita.");
+      }
+    });
+  });
+
+  /* ----- histórico ----- */
+  function fxRenderHist() {
+    const P = state.faxina.pessoas;
+    const weeks = Object.keys(state.faxina.semanas).sort().reverse();
+    const tot = {};
+    P.forEach(p => { tot[p] = { feito: 0, atrib: 0, naofez: 0 }; });
+    const rows = weeks.map(w => {
+      const s = fxScore(state.faxina.semanas[w]);
+      P.forEach(p => { tot[p].feito += s.per[p].feito; tot[p].atrib += s.per[p].atrib; tot[p].naofez += s.per[p].naofez; });
+      return { w: w, s: s };
+    });
+    const cur = thisWeek();
+    $view.innerHTML = `<div class="${monthAnim || "fade-in"}">
+      <div class="year-head"><div><h1>Histórico da faxina</h1><p>Pontos das tarefas feitas em cada semana. Toque em uma semana para abrir.</p></div></div>
+      ${weeks.length ? `
+      <div class="year-grid">
+        <div class="kpis fx-kpis full">
+          ${P.map(p => `<div class="card kpi"><p class="label person-head">${avatarHTML(p, " xs")}${esc(p)}</p><p class="v">${pts(tot[p].feito)}</p><p class="s">de ${pts(tot[p].atrib)} atribuídos${tot[p].naofez ? ` · ${tot[p].naofez} não fez` : ""}</p></div>`).join("")}
+          <div class="card kpi"><p class="label">Semanas registradas</p><p class="v">${weeks.length}</p><p class="s">${state.faxina.tarefasFixas.length} tarefas fixas por semana</p></div>
+        </div>
+        <section class="card panel full">
+          <h2>Semanas</h2>
+          <div class="tbl-wrap"><table class="clickable fx-hist">
+            <thead><tr><th>Semana</th>${P.map(p => `<th class="n">${esc(p)}</th>`).join("")}<th class="n wide2">Juntos</th><th class="n">Feitas</th></tr></thead>
+            <tbody>${rows.map(({ w, s }) => `<tr data-act="fx-goto" data-w="${w}" tabindex="0">
+              <td><b>${weekLabel(w)}</b>${w === cur ? '<span class="label"> · atual</span>' : ""}</td>
+              ${P.map(p => `<td class="n"><b>${s.per[p].feito}</b><span class="muted">/${s.per[p].atrib}</span>${s.per[p].naofez ? ` <span class="nf" title="${s.per[p].naofez} não fez">✕${s.per[p].naofez}</span>` : ""}</td>`).join("")}
+              <td class="n wide2">${s.juntos.done}/${s.juntos.n}</td>
+              <td class="n">${s.feitas}/${s.total}</td></tr>`).join("")}</tbody>
+          </table></div>
+          <p class="hint">Pontos feitos / pontos atribuídos. ✕ = tarefas que a pessoa não fez.</p>
+        </section>
+      </div>` : `<div class="empty"><span class="ic">${icon("calendar")}</span><h3>Nenhuma semana registrada</h3><p>Crie a lista da semana para começar o placar.</p>
+        <button type="button" class="btn btn-primary" data-act="fx-goto" data-w="${cur}">Abrir esta semana</button></div>`}
+    </div>`;
+    monthAnim = "";
+  }
+
   /* ---------------- Início ---------------- */
-  const ui = { q: "", lastCat: null };
+  const ui = { q: "", lastCat: null, fxPeso: 2 };
 
   async function init() {
     const prefs = loadPrefs();
-    let months = null, migrated = false;
+    let months = null, migrated = false, faxina = null;
     const srv = await askServer();
     if (srv) {
       DB.mode = "server";
       if (srv.data) {
-        try { months = fromDB(srv.data); DB.updatedAt = srv.data.atualizadoEm || null; }
+        try { months = fromDB(srv.data); faxina = fromFaxina(srv.data); DB.updatedAt = srv.data.atualizadoEm || null; }
         catch (e) { DB.readonly = true; DB.status = "err"; DB.msg = "db.json inválido: " + e.message; }
       }
     } else {
       try {
         const raw = localStorage.getItem(LOCAL_KEY);
-        if (raw) { const d = JSON.parse(raw); months = fromDB(d); DB.updatedAt = d.atualizadoEm || null; }
+        if (raw) { const d = JSON.parse(raw); months = fromDB(d); faxina = fromFaxina(d); DB.updatedAt = d.atualizadoEm || null; }
       } catch (e) { /* começa com os dados da planilha */ }
       if (!months) {
         try { const old = JSON.parse(localStorage.getItem(STORE_KEY)); if (old && old.months) { months = old.months; migrated = true; } } catch (e) { /* ignora */ }
@@ -1247,13 +1934,19 @@
       topMonth: MESES.includes(prefs.topMonth) ? prefs.topMonth : MESES[nowIdx],
       filter: ["all", "pend", "ok"].includes(prefs.filter) ? prefs.filter : "all",
       sort: ["list", "pending", "name", "value"].includes(prefs.sort) ? prefs.sort : "list",
-      group: prefs.group !== false
+      group: prefs.group !== false,
+      faxina: faxina || seedFaxina(),
+      module: prefs.module === "faxina" ? "faxina" : "compras",
+      week: typeof prefs.week === "string" && /^\d{4}-\d{2}-\d{2}$/.test(prefs.week) ? isoDate(mondayOf(parseIso(prefs.week))) : thisWeek(),
+      fxView: prefs.fxView === "hist" ? "hist" : "week",
+      fxFilter: typeof prefs.fxFilter === "string" ? prefs.fxFilter : "all"
     };
+    const fxFresh = !faxina;
     if (prefs.view === "dash") state.view = "month"; // a tela principal agora é o mês
-    DB.lastSaved = fresh || migrated ? "" : JSON.stringify(state.months);
+    DB.lastSaved = fresh || migrated || fxFresh ? "" : snapshot();
     renderStatus();
     render();
-    if ((fresh || migrated) && !DB.readonly) flush();
+    if ((fresh || migrated || fxFresh) && !DB.readonly) flush();
   }
 
   init();
