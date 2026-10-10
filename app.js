@@ -865,7 +865,7 @@
       return;
     }
     foot.innerHTML = r
-      ? `<button type="button" class="btn btn-danger-quiet" data-fact="ask-del">${icon("trash")}Excluir</button><span class="grow"></span>
+      ? `<button type="button" class="btn btn-danger-quiet" data-fact="ask-del">${icon("trash")}Excluir item</button><span class="grow"></span>
          <button type="button" class="btn" data-close>Cancelar</button>
          <button type="submit" class="btn btn-primary">Salvar</button>`
       : `<button type="submit" class="btn" data-more="1">Salvar e adicionar outro</button><span class="grow"></span>

@@ -415,7 +415,9 @@ button.stat:hover { background: var(--surface-2); }
 @keyframes rise { from { opacity: 0; transform: translateY(16px) scale(.98); } }
 .sheet-head { display: flex; align-items: center; gap: 8px; padding: 16px 12px 8px 20px; }
 .sheet-head h2 { font-size: var(--fs-md); font-weight: 700; flex: 1; }
-.sheet-body { padding: 8px 20px 20px; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 18px; }
+.sheet > form { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.sheet-head, .sheet-foot { flex: none; }
+.sheet-body { flex: 1 1 auto; min-height: 0; padding: 8px 20px 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y; display: flex; flex-direction: column; gap: 18px; }
 .sheet-foot {
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
   padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
